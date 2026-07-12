@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { TASKS, MONTHS } from '../data/planData';
 
 // ─── SunToggle.jsx ────────────────────────────────────────────────────────────
