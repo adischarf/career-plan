@@ -3,17 +3,17 @@
 // Progress is stored separately in Google Drive (see useStorage hook).
 // To update the plan: edit this file and bump PLAN_VERSION.
 
-export const PLAN_VERSION = "1.0.0";
-export const PLAN_VERSION_NOTES = "Initial release.";
+export const PLAN_VERSION = "1.1.0";
+export const PLAN_VERSION_NOTES = "Compressed timeline to 6 months. Expanded reading, congressional literacy, writing portfolio, and data skills.";
 
 // ─── TRACK DEFINITIONS ───────────────────────────────────────────────────────
 export const TRACKS = {
   A: { id: "A", label: "Track A", name: "Psychological & Momentum", color: "sage",    pill: "pill-a", description: "The foundation everything else rests on." },
   B: { id: "B", label: "Track B", name: "Network Reactivation",     color: "lilac",   pill: "pill-b", description: "Gradual, shame-informed re-engagement." },
-  C: { id: "C", label: "Track C", name: "Field Knowledge",          color: "gold",    pill: "pill-c", description: "Getting back on the pulse of child welfare policy." },
+  C: { id: "C", label: "Track C", name: "Field Knowledge",          color: "gold",    pill: "pill-c", description: "Getting back on the pulse of child welfare policy — including what is moving in Congress." },
   D: { id: "D", label: "Track D", name: "Skill Building",           color: "teal",    pill: "pill-d", description: "Writing, data literacy, stats, policy craft." },
   E: { id: "E", label: "Track E", name: "Current Role",             color: "purple",  pill: "pill-e", description: "Maximizing what you have while you have it." },
-  F: { id: "F", label: "Track F", name: "Job Search Prep",          color: "bougainvillea", pill: "pill-f", description: "Begins Month 5, executes Month 7+." },
+  F: { id: "F", label: "Track F", name: "Job Search Prep",          color: "bougainvillea", pill: "pill-f", description: "Begins Month 3, executes Month 4+." },
 };
 
 // ─── PHASE DEFINITIONS ───────────────────────────────────────────────────────
@@ -22,18 +22,18 @@ export const PHASES = [
     id: "phase1",
     label: "Phase 1",
     name: "Foundation & Reactivation",
-    subtitle: "Months 1–6 · Stay in current role · Build the conditions for everything else",
-    months: ["month1","month2","month3","month4_5","month6"],
+    subtitle: "Months 1–3 · Stay in current role · Build the conditions for everything else · 5–10 hrs/week",
+    months: ["month1","month2","month3"],
     celebrationFlower: "bougainvillea",
     celebrationText: "Phase 1 Complete!",
-    celebrationMessage: "Six months of showing up for yourself. The foundation is built.",
+    celebrationMessage: "Three months of showing up for yourself. The foundation is built.",
   },
   {
     id: "phase2",
     label: "Phase 2",
     name: "Positioning & Active Search",
-    subtitle: "Months 7–12+ · Execute on what Phase 1 built · Find the right role",
-    months: ["month7_9"],
+    subtitle: "Months 4–6 · Execute on what Phase 1 built · Find the right role",
+    months: ["month4_5","month6","month7_9"],
     celebrationFlower: "bougainvillea",
     celebrationText: "Phase 2 Complete!",
     celebrationMessage: "You did it. From where you were to where you wanted to be.",
@@ -57,7 +57,7 @@ export const MONTHS = [
     label: "Month 2",
     phase: "phase1",
     title: "Weekly rhythm",
-    subtitle: "LinkedIn on your terms — first writing draft",
+    subtitle: "LinkedIn on your terms — first writing draft — congressional tracker live",
     celebrationText: "Month 2 Complete!",
     celebrationMessage: "A rhythm is forming. You're doing this.",
     celebrationFlower: "lilac",
@@ -67,17 +67,17 @@ export const MONTHS = [
     label: "Month 3",
     phase: "phase1",
     title: "Coffee with your mentor",
-    subtitle: "Expand network — first data steps",
+    subtitle: "Expand network — first data steps — Phase 1 complete",
     celebrationText: "Month 3 Complete!",
-    celebrationMessage: "Halfway through Phase 1. The network is waking up.",
-    celebrationFlower: "lilac",
+    celebrationMessage: "Phase 1 done. Three months of real work. You are not the same person who opened this plan.",
+    celebrationFlower: "peony",
   },
   {
     id: "month4_5",
     label: "Months 4–5",
-    phase: "phase1",
+    phase: "phase2",
     title: "Deepen everything",
-    subtitle: "External feedback — job search prep begins",
+    subtitle: "External feedback — job search prep — active networking",
     celebrationText: "Months 4–5 Complete!",
     celebrationMessage: "You're building something real. Writing samples. Data skills. Connections.",
     celebrationFlower: "lilac",
@@ -85,33 +85,26 @@ export const MONTHS = [
   {
     id: "month6",
     label: "Month 6",
-    phase: "phase1",
-    title: "Consolidate and get ready",
-    subtitle: "Phase 1 closes — Phase 2 begins",
+    phase: "phase2",
+    title: "Consolidate and launch",
+    subtitle: "Portfolio complete — search infrastructure ready",
     celebrationText: "Month 6 Complete!",
-    celebrationMessage: "Phase 1 is done. You are not the same person who opened this plan six months ago.",
+    celebrationMessage: "Search ready. You built this in six months.",
     celebrationFlower: "lilac",
   },
   {
     id: "month7_9",
-    label: "Months 7–9",
+    label: "Months 4–6 (Active Search)",
     phase: "phase2",
     title: "Active search",
     subtitle: "Warm applications — sustain the habits",
-    celebrationText: "Months 7–9 Complete!",
-    celebrationMessage: "The search is underway. Trust the work you did in Phase 1.",
+    celebrationText: "Active Search Phase Complete!",
+    celebrationMessage: "The search is underway. Trust the work you did.",
     celebrationFlower: "lilac",
   },
 ];
 
 // ─── TASK DEFINITIONS ────────────────────────────────────────────────────────
-// Each task has:
-//   id, monthId, trackId, label, title (short), body (full prose),
-//   subtasks (array), isRecurring, recurringLabel,
-//   contextualHelp (optional prose shown behind Read More),
-//   crossRefs (array of task IDs this task references),
-//   hasOutput (bool), winText (plain language for wins log)
-
 export const TASKS = [
 
   // ══════════════════════════════════════════════
@@ -121,16 +114,16 @@ export const TASKS = [
   {
     id: "A1", monthId: "month1", trackId: "A",
     label: "Task A1", title: "Share this plan with your ADHD coach",
-    body: "In your next session with your ADHD coach, share this plan and ask them to help you build the scaffolding for it. Specifically: how to break down abstract tasks, what a realistic weekly rhythm looks like, and how to set up accountability check-ins.",
+    body: "In your next session with your ADHD coach, share this plan and ask them to help you build the scaffolding for it. Specifically: how to break down abstract tasks, what a realistic weekly rhythm looks like, and how to set up accountability check-ins. Note: this is an accelerated 6-month plan at 5–10 hours per week. Some tasks will overlap rather than sequence — your coach can help you design for that.",
     subtasks: [
       { id: "A1a", text: "Bring this plan to your next ADHD coach session" },
       { id: "A1b", text: "Ask them how to break down abstract tasks" },
-      { id: "A1c", text: "Agree on a realistic weekly rhythm together" },
+      { id: "A1c", text: "Agree on a realistic weekly rhythm for 5–10 hrs/week" },
       { id: "A1d", text: "Set up an accountability check-in structure" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Shared your plan with your ADHD coach and built scaffolding for it",
+    winText: "Shared your plan with your ADHD coach and built scaffolding for an accelerated timeline",
     timeBox: "One session, 1 hour",
   },
   {
@@ -210,23 +203,24 @@ export const TASKS = [
   {
     id: "C1", monthId: "month1", trackId: "C",
     label: "Task C1", title: "Subscribe to two field newsletters",
-    body: "Set up your reading infrastructure. Subscribe to two or three newsletters or policy digests. Recommended starting points: the Child Welfare Information Gateway updates, the Annie E. Casey Foundation newsletter, First Focus on Children's policy updates, and the Chronicle of Social Change. Choose two that feel most relevant to you.",
+    body: "Set up your reading infrastructure. Subscribe to two or three newsletters or policy digests. Recommended starting points: the Child Welfare Information Gateway updates, the Annie E. Casey Foundation newsletter, First Focus on Children's policy updates, and the Chronicle of Social Change. Choose two that feel most relevant to you. Also: if you have The Red Book (child welfare law reference) or policy workbooks from your former organization, pull those out — they belong in your reading rotation.",
     subtasks: [
       { id: "C1a", text: "Browse: Child Welfare Information Gateway (childwelfare.gov)" },
       { id: "C1b", text: "Browse: Annie E. Casey Foundation newsletter (aecf.org)" },
       { id: "C1c", text: "Browse: First Focus on Children (firstfocus.org)" },
       { id: "C1d", text: "Browse: Chronicle of Social Change (chronicleofsocialchange.org)" },
       { id: "C1e", text: "Subscribe to your two favorites" },
+      { id: "C1f", text: "Locate The Red Book and any policy workbooks from your former org — put them where you'll actually read them" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Subscribed to two child welfare policy newsletters — field knowledge starts flowing",
+    winText: "Subscribed to two child welfare policy newsletters and located your reference books",
     timeBox: "20 minutes",
   },
   {
     id: "C2", monthId: "month1", trackId: "C",
     label: "Task C2", title: "Create your field journal",
-    body: "Create a field journal — a simple folder in your email, a notes app, or a document. When you read something interesting, drop a one-sentence note about why it matters. No length requirement — one sentence is enough. This becomes material for future conversations, writing, and job interviews.",
+    body: "Create a field journal — a simple folder in your email, a notes app, or a document. When you read something interesting, drop a one-sentence note about why it matters. No length requirement — one sentence is enough. This becomes material for future conversations, writing, and job interviews.\n\nA note on the work/life boundary: it is genuinely hard to work on child welfare things outside of work when your current job makes you feel badly. The field journal is designed to help with this — it separates 'building my career' from 'thinking about my draining job.' You are not extending your workday. You are building toward the work you actually want.",
     subtasks: [
       { id: "C2a", text: "Choose your format (email folder, notes app, or document)" },
       { id: "C2b", text: "Write your first entry: one sentence about something you already know about the field" },
@@ -238,18 +232,20 @@ export const TASKS = [
   },
   {
     id: "C3", monthId: "month1", trackId: "C",
-    label: "Task C3", title: "Read one piece from your org's body of work",
-    body: "Your organization has done decades of foundational child welfare work. Getting familiar with it serves two purposes: it rebuilds your field knowledge and helps you contribute more meaningfully at work. Spend one session browsing your org's publications page — reports, briefs, toolkits. Pick one piece to read this month.",
+    label: "Task C3", title: "Read pieces from your org's body of work",
+    body: "Your organization has done decades of foundational child welfare work. Getting familiar with it serves two purposes: it rebuilds your field knowledge and helps you contribute more meaningfully at work. Browse your org's publications page this month. Aim for multiple pieces per week — minimum one this month. For each piece, ask: How does this fit the broader field? What connections can you draw to other bodies of work? What writing or research skills did the authors use?",
     subtasks: [
-      { id: "C3a", text: "Browse your org's publications or reports page" },
-      { id: "C3b", text: "Choose one piece that looks interesting or relevant" },
+      { id: "C3a", text: "Browse your org's publications or reports page (15 min)" },
+      { id: "C3b", text: "Choose one piece to read this week" },
       { id: "C3c", text: "Read it (executive summary + recommendations at minimum)" },
-      { id: "C3d", text: "Add one sentence to your field journal about what you read" },
+      { id: "C3d", text: "Add a note to your field journal: one connection to the broader field" },
+      { id: "C3e", text: "Set a recurring reminder to read at least one org piece per week" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Read a piece from your org's body of work — your own organization's field knowledge",
+    winText: "Started reading your org's body of work — field knowledge and internal credibility building in parallel",
     timeBox: "15 min browsing + 20 min reading",
+    contextualHelp: "When reading your org's publications, try asking yourself these questions:\n\n• How does this work fit into the broader landscape of child welfare policy — who else is working on this problem?\n• What connections can you draw to other bodies of work or active debates you've been following?\n• What writing or research skills did the authors use that made this a strong piece?\n• If this were introduced as federal legislation, how do you think it would fare in the current Congress? Who would support it, who would oppose it?\n\nThese questions transform passive reading into active field-building. Even one sentence in your field journal per piece is enough.",
   },
 
   {
@@ -268,33 +264,36 @@ export const TASKS = [
   {
     id: "D2", monthId: "month1", trackId: "D",
     label: "Task D2", title: "Collect policy writing examples to study",
-    body: "Collect three to five examples of the policy writing you want to produce: a coalition one-pager, a legislative fact sheet, a policy brief, a comment letter. Save them. Read them for structure, not just content — how do they open? How do they use data? What is the paragraph length? What is the tone?",
+    body: "Collect three to five examples of the policy writing you want to produce: a coalition one-pager, a legislative fact sheet, a policy brief, a comment letter, a research memo. Save them. Read them for structure, not just content — how do they open? How do they use data? What is the paragraph length? What is the tone? How do they handle evidence and citations?",
     subtasks: [
       { id: "D2a", text: "Find a coalition one-pager from an org you admire" },
       { id: "D2b", text: "Find a legislative fact sheet" },
-      { id: "D2c", text: "Find a policy brief or comment letter" },
-      { id: "D2d", text: "Read them for structure: opening, data use, length, tone" },
-      { id: "D2e", text: "Save them somewhere you can reference later" },
+      { id: "D2c", text: "Find a policy brief or research memo" },
+      { id: "D2d", text: "Find a public comment letter (regulations.gov is a good source)" },
+      { id: "D2e", text: "Read them for structure: opening, data use, length, tone, citations" },
+      { id: "D2f", text: "Save them somewhere you can reference when writing" },
     ],
     isRecurring: false,
     hasOutput: true,
     winText: "Collected policy writing examples — you now have models to learn from",
     timeBox: "One 45-minute session",
+    contextualHelp: "When studying these writing samples, pay attention to the 'policy writing architecture' — the skeleton underneath the specific content. Good policy writing generally follows this structure:\n\n1. Executive summary / lead: state the problem and recommendation in 2–3 sentences\n2. Problem statement: what is the issue, who is affected, why it matters now\n3. Evidence paragraph: what does research or data say\n4. Recommendation: specific, actionable, realistic given the political environment\n5. Closing: call to action or implications\n\nRecommended resources to go deeper: 'The Craft of Research' (Booth, Colomb & Williams) for research and argumentation; the Harvard Kennedy School's policy memo guide (available free online) for memo structure; 'Writing for Policy' by Eugenia Toma for the genre conventions. The HKS guide in particular is worth bookmarking — it is the clearest single reference for the policy memo format.",
   },
 
   {
     id: "E1", monthId: "month1", trackId: "E",
     label: "Task E1", title: "Map the legal framework of your current role",
-    body: "Map the legal framework of your current job in plain language. What statute or regulation does your team operate under? What does it require and prohibit? Write it down — one page max. Understanding the constraints is different from accepting them, and doing this will reduce the daily mental friction you feel.",
+    body: "Map the legal framework of your current job in plain language. What statute or regulation does your team operate under? What does it require and prohibit? Write it down — one page max. Understanding the constraints reduces the daily mental friction you feel.\n\nThis is harder than it sounds when your job makes you feel bad to think about — but this is career capital, not work extension. Understanding the statutory basis of your current role makes you more fluent in a policy conversation. It also reduces daily friction because you stop wondering why things are the way they are.",
     subtasks: [
       { id: "E1a", text: "Identify the statute or regulation your team operates under" },
       { id: "E1b", text: "Write out what it requires and what it prohibits — plain language" },
       { id: "E1c", text: "Keep it to one page and save it" },
+      { id: "E1d", text: "Note: what policy debates connect to this statute?" },
     ],
     isRecurring: false,
     hasOutput: true,
-    winText: "Mapped the legal framework of your current role — reduced daily friction",
-    timeBox: "30 minutes",
+    winText: "Mapped the legal framework of your current role — career capital, not just job knowledge",
+    timeBox: "45 minutes",
   },
   {
     id: "E2", monthId: "month1", trackId: "E",
@@ -330,15 +329,15 @@ export const TASKS = [
   {
     id: "A5", monthId: "month2", trackId: "A",
     label: "Task A5", title: "Establish your Sunday reset rhythm",
-    body: "Rather than a fixed recurring block (which breaks when life is unpredictable), try a Sunday reset: each Sunday, spend 10 minutes looking at the week ahead and deciding when your career development hour will happen that specific week. Block it on your calendar for that week only. This adapts to your actual schedule rather than requiring you to stick to a slot that may not always exist. If Sunday itself is variable, pick whatever day works as your planning day.",
+    body: "Rather than a fixed recurring block (which breaks when life is unpredictable), try a Sunday reset: each Sunday, spend 10 minutes looking at the week ahead and deciding when your career development hours will happen that specific week. Block them on your calendar for that week only. At 5–10 hours per week, you'll typically be scheduling 2–3 sessions. This adapts to your actual schedule rather than requiring you to stick to slots that may not always exist.",
     subtasks: [
       { id: "A5a", text: "Choose your weekly planning day (Sunday or another consistent day)" },
-      { id: "A5b", text: "Do your first Sunday reset: look at next week and block your career development hour" },
-      { id: "A5c", text: "Tell your boyfriend or ADHD coach your planning day — soft accountability" },
+      { id: "A5b", text: "Do your first Sunday reset: look at next week and block your career development hours" },
+      { id: "A5c", text: "Tell your ADHD coach your planning day — soft accountability" },
     ],
     isRecurring: true,
     recurringLabel: "Weekly Sunday reset",
-    recurringDescription: "Each week: 10 minutes to look at the week ahead and schedule your career development hour.",
+    recurringDescription: "Each week: 10 minutes to look at the week ahead and schedule your career development sessions (aim for 5–10 hrs total).",
     hasOutput: false,
     winText: "Established your Sunday reset rhythm — flexible structure that bends without breaking",
     timeBox: "10 minutes each week",
@@ -373,7 +372,7 @@ export const TASKS = [
   {
     id: "B4", monthId: "month2", trackId: "B",
     label: "Task B4", title: "20-minute LinkedIn engagement (no feed)",
-    body: "How to engage on LinkedIn without scrolling: instead of opening your home feed, go directly to the search bar and search for a specific organization or topic you care about. Navigate to that org's page and engage with one of their recent posts from there. Or go directly to the profile of a thought leader you already follow and engage with one of their posts. Set a timer for 20 minutes. Search → engage → close. Never open the home feed.",
+    body: "How to engage on LinkedIn without scrolling: instead of opening your home feed, go directly to the search bar and search for a specific organization or topic you care about. Navigate to that org's page and engage with one of their recent posts from there. Set a timer for 20 minutes. Search → engage → close. Never open the home feed.",
     subtasks: [
       { id: "B4a", text: "Set a 20-minute timer" },
       { id: "B4b", text: "Go to LinkedIn search — search for a child welfare org you follow" },
@@ -405,7 +404,7 @@ export const TASKS = [
   {
     id: "B6_pending", monthId: "month2", trackId: "B",
     label: "Task B6", title: "Respond to pending LinkedIn connection messages",
-    body: "You went back on LinkedIn and found 3–5 messages from people wanting to connect. You don't need to be fully \"back in the game\" to respond to these. A simple reply: \"Thanks so much for reaching out — happy to connect\" or, if they asked for something specific: \"Thanks for this — I'd be happy to connect, though my bandwidth is limited right now.\" Leaving them unanswered longer doesn't serve you. Respond briefly, connect, and move on. You are not committing to a conversation. You are keeping a door open.",
+    body: "You went back on LinkedIn and found 3–5 messages from people wanting to connect. You don't need to be fully \"back in the game\" to respond to these. A simple reply: \"Thanks so much for reaching out — happy to connect\" or, if they asked for something specific: \"Thanks for this — I'd be happy to connect, though my bandwidth is limited right now.\" Leaving them unanswered longer doesn't serve you. Respond briefly, connect, and move on.",
     subtasks: [
       { id: "B6a", text: "Open your LinkedIn message requests" },
       { id: "B6b", text: "Reply to each one briefly (use the example language)" },
@@ -419,31 +418,54 @@ export const TASKS = [
 
   {
     id: "C4", monthId: "month2", trackId: "C",
-    label: "Task C4", title: "Read one longer-form field piece",
-    body: "Read one longer-form piece this month — a policy brief, a report, or a Congressional Research Service summary on child welfare. Read the executive summary and the recommendations. Fifteen minutes. Write one sentence in your field journal.",
+    label: "Task C4", title: "Read longer-form field pieces",
+    body: "Read longer-form pieces this month — policy briefs, reports, or Congressional Research Service summaries on child welfare. Aim for multiple pieces per week; minimum one this month. Read the executive summary and the recommendations. Write one sentence in your field journal for each. Also: begin working through The Red Book or your policy workbooks if you have them — even one chapter or section this month.",
     subtasks: [
       { id: "C4a", text: "Choose a longer piece from your newsletters or a source you trust" },
       { id: "C4b", text: "Read the executive summary and recommendations" },
       { id: "C4c", text: "Add one sentence to your field journal" },
+      { id: "C4d", text: "If you have The Red Book: read one chapter or section" },
+      { id: "C4e", text: "Set a goal: at least one longer piece per week going forward" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Read a longer-form field piece and captured a thought in your field journal",
-    timeBox: "15 minutes",
+    winText: "Read longer-form field pieces and started on your reference books",
+    timeBox: "15–20 minutes per piece",
   },
   {
     id: "C5", monthId: "month2", trackId: "C",
-    label: "Task C5", title: "Read another piece from your org's body of work",
-    body: "Continue your org's body of work: read one more publication from your organization this month. The goal by Month 4 is being able to speak with genuine fluency about what your organization stands for, what problems it has identified, and how its approach fits into the broader field landscape. This is also excellent interview preparation.",
+    label: "Task C5", title: "Continue org body of work reading",
+    body: "Continue reading your organization's publications. Aim for multiple pieces per week — minimum one this month. For each piece, reflect: How does your org's approach fit the broader field landscape? What connections can you draw to other bodies of work? What would happen if this work were introduced as federal legislation — who would support it? These questions transform passive reading into active field-building.",
     subtasks: [
-      { id: "C5a", text: "Browse your org's publications again and choose a second piece" },
+      { id: "C5a", text: "Choose at least one more piece from your org's publications" },
       { id: "C5b", text: "Read it (executive summary + key findings at minimum)" },
-      { id: "C5c", text: "Add a note to your field journal" },
+      { id: "C5c", text: "Add a note to your field journal using the reflection questions" },
+      { id: "C5d", text: "Continue reading additional pieces throughout the month" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Read a second piece from your org's body of work — building fluency in your own organization",
+    winText: "Continued your org's body of work reading — building real fluency",
     crossRefs: ["C3"],
+    contextualHelp: "Reflection questions for each piece:\n\n• How does this fit the broader child welfare landscape — who else is working on this?\n• What connections can you draw to active debates or other research you've read?\n• What research or writing skills made this a strong piece?\n• If this were introduced as legislation in the current Congress, how would it fare? Who would support it, who would oppose it, what would the key arguments be?\n• What would a skeptical congressional staffer push back on, and how would you respond?\n\nEven two or three of these per piece is enough to start building the analytical muscle you want.",
+  },
+
+  {
+    id: "C11", monthId: "month2", trackId: "C",
+    label: "Task C11", title: "Set up your Congressional tracker",
+    body: "Subscribe to one Congressional tracker for child welfare now — not Month 4. Congress.gov alerts for relevant bills, or the First Focus on Children legislative tracker. Spend five minutes per week scanning it. You don't need to read every bill. You need to know what is moving, who the sponsors are, and what the key arguments for and against are. Congressional literacy is a priority skill for the work you want to do.",
+    subtasks: [
+      { id: "C11a", text: "Go to Congress.gov and set up a bill alert for child welfare or foster care topics" },
+      { id: "C11b", text: "Subscribe to First Focus on Children's legislative tracker (firstfocus.org)" },
+      { id: "C11c", text: "Scan it for 5 minutes — note one bill that's moving and who sponsored it" },
+      { id: "C11d", text: "Add a sentence to your field journal: what is the key argument for this bill?" },
+    ],
+    isRecurring: true,
+    recurringLabel: "Weekly legislative scan (5 min)",
+    recurringDescription: "5 minutes per week: scan your Congressional tracker. Note what's moving, who the key players are, what the arguments are.",
+    hasOutput: false,
+    winText: "Set up your Congressional tracker — you now know what's moving on the Hill",
+    timeBox: "5 minutes per week ongoing",
+    contextualHelp: "Congressional literacy means knowing: what bills are moving and why now, who the key sponsors and champions are, what coalitions are forming around child welfare legislation, what the counterarguments look like, and which committees have jurisdiction. You don't need deep expertise in Year 1. You need enough to have a credible conversation and to keep learning.\n\nBuilding from here: in your informational interviews (Month 3+), make a habit of asking people how they track congressional activity and what they read. In your networking conversations, being able to reference a specific bill or committee hearing signals that you are current in the field. Longer term, reaching out to congressional staffers for informational interviews — especially staff on the Ways & Means Committee or Senate Finance Committee, which have jurisdiction over child welfare programs — is a concrete goal for Phase 2.",
   },
 
   {
@@ -461,12 +483,12 @@ export const TASKS = [
     winText: "Wrote your first practice one-pager — the hardest draft is always the first",
     timeBox: "45–60 minutes",
     crossRefs: ["D2"],
-    contextualHelp: "A practice one-pager is not an op-ed. It does not need to be original. What it is: a structured exercise in translating something you already know or have just read into the format that policy audiences use. The goal is to practice the form — the executive summary, the problem statement, the evidence paragraph, the recommendation line — not to stake out a new intellectual position.\n\nA specific low-stakes prompt: choose one active child welfare debate you've been reading about (e.g., FFPSA implementation challenges) and write a 400-word summary of the issue, what research says, and one policy recommendation that already exists in the field. You are not inventing the recommendation — you are learning to write in the genre.",
+    contextualHelp: "A practice one-pager is not an op-ed. It does not need to be original. What it is: a structured exercise in translating something you already know or have just read into the format that policy audiences use. The goal is to practice the form — the executive summary, the problem statement, the evidence paragraph, the recommendation line — not to stake out a new intellectual position.\n\nA specific low-stakes prompt: choose one active child welfare debate you've been reading about (e.g., FFPSA implementation challenges) and write a 400-word summary of the issue, what research says, and one policy recommendation that already exists in the field. You are not inventing the recommendation — you are learning to write in the genre.\n\nFor structure guidance: the Harvard Kennedy School policy memo format is a reliable framework (available free online at hks.harvard.edu). 'The Craft of Research' by Booth, Colomb & Williams is worth keeping nearby for how to build and support an argument. For data-driven writing, 'The Chicago Guide to Writing about Numbers' by Jane Miller is the clearest guide to presenting evidence in policy contexts.",
   },
   {
     id: "D4", monthId: "month2", trackId: "D",
     label: "Task D4", title: "Begin R for Data Science — Chapters 1–2",
-    body: "Begin R for Data Science (free at r4ds.hadley.nz). Complete Chapters 1–2 this month. R with the tidyverse is widely used in policy research environments, has a large free learning ecosystem, and produces the kind of clean data visualizations that are genuinely useful in policy advocacy work.",
+    body: "Begin R for Data Science (free at r4ds.hadley.nz). Complete Chapters 1–2 this month. R with the tidyverse is widely used in policy research environments, has a large free learning ecosystem, and produces clean data visualizations that are genuinely useful in policy advocacy work.",
     subtasks: [
       { id: "D4a", text: "Go to r4ds.hadley.nz and bookmark it" },
       { id: "D4b", text: "Install R and RStudio if not already installed (free at posit.co)" },
@@ -482,14 +504,14 @@ export const TASKS = [
   {
     id: "E4", monthId: "month2", trackId: "E",
     label: "Task E4", title: "Treat coalition project hours as your most important work",
-    body: "The 6 hours per month on the policy/coalition project: treat these as the most important 6 hours of your work month. Come prepared. Do more than asked where possible. Ask questions that demonstrate policy depth. This is your internal audition for more.",
+    body: "The hours per month on the policy/coalition project: treat these as the most important hours of your work month. Come prepared. Do more than asked where possible. Ask questions that demonstrate policy depth. This is your internal audition for more.",
     subtasks: [
       { id: "E4a", text: "Before each coalition session: review relevant background materials" },
       { id: "E4b", text: "During sessions: ask at least one substantive policy question" },
       { id: "E4c", text: "After sessions: note one thing you contributed or learned" },
     ],
     isRecurring: true,
-    recurringLabel: "Monthly coalition project (6 hrs)",
+    recurringLabel: "Monthly coalition project hours",
     recurringDescription: "Come prepared. Do more than asked. Ask questions that show policy depth. This is your internal audition.",
     hasOutput: false,
     winText: "Showed up fully for your coalition project hours — your internal audition",
@@ -510,13 +532,13 @@ export const TASKS = [
   },
 
   // ══════════════════════════════════════════════
-  // MONTH 3
+  // MONTH 3 — Phase 1 Complete
   // ══════════════════════════════════════════════
 
   {
     id: "A7", monthId: "month3", trackId: "A",
     label: "Task A7", title: "Month 3 compass check",
-    body: "Pull out the reference document you wrote in Task A2 — what it felt like when you were at your best. Does any of it feel more accessible now than it did in Month 1? Write one sentence update. This is a compass check, not a performance review.",
+    body: "Pull out the reference document you wrote in Task A2 — what it felt like when you were at your best. Does any of it feel more accessible now than it did in Month 1? Write one sentence update. This is a compass check, not a performance review. By Month 3 you should have visible wins in your log, a rhythm underway, and at least one good network re-engagement. Notice that — it is evidence.",
     subtasks: [
       { id: "A7a", text: "Find the document you wrote in Task A2" },
       { id: "A7b", text: "Read it with fresh eyes" },
@@ -574,13 +596,14 @@ export const TASKS = [
 
   {
     id: "C6", monthId: "month3", trackId: "C",
-    label: "Task C6", title: "Attend your first virtual field event",
-    body: "Attend one virtual event this month — a webinar, a Hill briefing, or a coalition call. You do not have to speak or network at it. Just be in the room. Add one sentence to your field journal afterward.",
+    label: "Task C6", title: "Attend virtual field events — start early, go often",
+    body: "Attend at least one virtual event this month — a webinar, a Hill briefing, or a coalition call. You do not have to speak or network at it. Just be in the room. Attending events gets you current on debates, re-energizes your sense of the field, and is genuinely less daunting than networking one-on-one. Make it a habit: one event per month minimum going forward.",
     subtasks: [
-      { id: "C6a", text: "Find a virtual event in child welfare policy (check org newsletters)" },
+      { id: "C6a", text: "Find a virtual event in child welfare policy (check your newsletters)" },
       { id: "C6b", text: "Register and add it to your calendar" },
       { id: "C6c", text: "Attend" },
       { id: "C6d", text: "Add one sentence to your field journal about what you heard" },
+      { id: "C6e", text: "Find next month's event and register for it now" },
     ],
     isRecurring: false,
     hasOutput: false,
@@ -589,43 +612,46 @@ export const TASKS = [
   {
     id: "C7", monthId: "month3", trackId: "C",
     label: "Task C7", title: "Write summaries of 2–3 active CW debates",
-    body: "Identify the two or three biggest active debates or legislative priorities in child welfare right now — for example: FFPSA implementation, Title IV-E expansion, family preservation vs. congregate care debates. Write a one-paragraph summary of each for your own reference only. This is how you rebuild your finger on the pulse.",
+    body: "Identify the two or three biggest active debates or legislative priorities in child welfare right now — for example: FFPSA implementation, Title IV-E expansion, family preservation vs. congregate care debates. Write a one-paragraph summary of each for your own reference. This is how you rebuild your finger on the pulse. Return to these next month and add what's changed.",
     subtasks: [
-      { id: "C7a", text: "Identify 2–3 active CW debates from your reading" },
-      { id: "C7b", text: "Write a one-paragraph summary of each" },
+      { id: "C7a", text: "Identify 2–3 active CW debates from your reading and legislative tracker" },
+      { id: "C7b", text: "Write a one-paragraph summary of each: what is the debate, who are the players, what is moving" },
       { id: "C7c", text: "Save them in your field journal" },
+      { id: "C7d", text: "Note: which congressional committees have jurisdiction over each?" },
     ],
     isRecurring: false,
     hasOutput: true,
     winText: "Wrote summaries of active child welfare debates — your finger is on the pulse again",
     timeBox: "45 minutes",
+    crossRefs: ["C11"],
   },
   {
     id: "C8", monthId: "month3", trackId: "C",
-    label: "Task C8", title: "Third piece from org body of work",
-    body: "Continue your org's body of work reading. After three pieces, you should be developing a clear sense of your org's intellectual framework and contributions to the field.",
+    label: "Task C8", title: "Continue org body of work reading",
+    body: "Continue reading your org's publications. Aim for multiple pieces per week — minimum one this month. After three months of reading, you should be developing a clear sense of your org's intellectual framework and what it has contributed to the field.",
     subtasks: [
-      { id: "C8a", text: "Choose a third piece from your org's publications" },
+      { id: "C8a", text: "Choose at least one more piece from your org's publications" },
       { id: "C8b", text: "Read it and add a note to your field journal" },
+      { id: "C8c", text: "Continue reading additional pieces throughout the month" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Read a third piece from your org — developing real fluency in its work",
+    winText: "Continued your org body of work reading — developing real fluency",
     crossRefs: ["C3","C5"],
   },
 
   {
     id: "D5", monthId: "month3", trackId: "D",
-    label: "Task D5", title: "Write your second practice one-pager",
-    body: "Write your second practice one-pager. Try a different format from Month 2 — if you summarized an issue last month, try drafting a legislative fact sheet this month. Completed draft is the goal, not polish.",
+    label: "Task D5", title: "Write your second practice piece",
+    body: "Write your second practice piece. Try a different format — if you wrote a one-pager last month, try a legislative fact sheet or a research brief summary. Completed draft is the goal, not polish.",
     subtasks: [
-      { id: "D5a", text: "Choose a different format from last month (try a legislative fact sheet)" },
+      { id: "D5a", text: "Choose a different format (try a legislative fact sheet)" },
       { id: "D5b", text: "Draft it — use your Month 1 writing models for structure" },
       { id: "D5c", text: "Save it as Draft 2 in your writing portfolio" },
     ],
     isRecurring: false,
     hasOutput: true,
-    winText: "Wrote your second practice one-pager — two drafts in your portfolio",
+    winText: "Wrote your second practice piece — two drafts in your portfolio",
     crossRefs: ["D3"],
   },
   {
@@ -660,13 +686,13 @@ export const TASKS = [
   },
 
   // ══════════════════════════════════════════════
-  // MONTHS 4–5
+  // MONTHS 4–5 (Phase 2 begins)
   // ══════════════════════════════════════════════
 
   {
     id: "A8", monthId: "month4_5", trackId: "A",
     label: "Task A8", title: "LinkedIn comparison pain check-in",
-    body: "By Month 5: check in with yourself on the LinkedIn comparison pain. Is it less acute than in Month 1? What changed? Bring this observation to your therapist or coach — not as a problem to solve, but as data about what is working.",
+    body: "Check in with yourself on the LinkedIn comparison pain. Is it less acute than in Month 1? What changed? Bring this observation to your therapist or coach — not as a problem to solve, but as data about what is working.",
     subtasks: [
       { id: "A8a", text: "Reflect: is the comparison pain less acute than in Month 1?" },
       { id: "A8b", text: "Note what changed — what made it easier?" },
@@ -680,11 +706,11 @@ export const TASKS = [
   {
     id: "B10", monthId: "month4_5", trackId: "B",
     label: "Task B10", title: "First informational interview",
-    body: "One informational interview in Month 4, sourced from your mentor's referrals or from people whose LinkedIn content you have been following. These are 20–30 minute conversations. You do not need to have all the answers — you need to be curious and listen.",
+    body: "One informational interview this month, sourced from your mentor's referrals or from people whose LinkedIn content you have been following. These are 20–30 minute conversations. You do not need to have all the answers — you need to be curious and listen. In these conversations, ask how they track congressional activity and what they read — this builds your legislative literacy in parallel.",
     subtasks: [
       { id: "B10a", text: "Choose a name from your mentor's referrals or your LinkedIn follows" },
       { id: "B10b", text: "Send a brief request for a 20-minute call" },
-      { id: "B10c", text: "Prepare 3 questions beforehand" },
+      { id: "B10c", text: "Prepare 3 questions including: 'How do you track what's happening in Congress?'" },
       { id: "B10d", text: "Have the conversation" },
       { id: "B10e", text: "Send a thank-you note within 24 hours" },
     ],
@@ -696,24 +722,23 @@ export const TASKS = [
   },
   {
     id: "B11", monthId: "month4_5", trackId: "B",
-    label: "Task B11", title: "Second informational interview",
-    body: "One informational interview in Month 5, continuing to build from your mentor's referrals or LinkedIn follows. By the end of Month 5, you should have had two informational conversations.",
+    label: "Task B11", title: "Second and third informational interviews",
+    body: "Two more informational interviews in Month 4–5. By the end of this period you should have had at least three conversations. These are increasingly important — you are signaling your presence in the field and building the relationships that will make your job search warmer.",
     subtasks: [
-      { id: "B11a", text: "Choose a second contact for an informational conversation" },
-      { id: "B11b", text: "Send a brief request for a 20-minute call" },
-      { id: "B11c", text: "Prepare 3 questions" },
-      { id: "B11d", text: "Have the conversation" },
-      { id: "B11e", text: "Send a thank-you note within 24 hours" },
+      { id: "B11a", text: "Choose a second contact and send a brief request" },
+      { id: "B11b", text: "Have the conversation and send a thank-you note" },
+      { id: "B11c", text: "Choose a third contact and send a brief request" },
+      { id: "B11d", text: "Have the conversation and send a thank-you note" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Had your second informational interview — two new warm contacts",
+    winText: "Had two more informational interviews — three warm contacts in the field",
     crossRefs: ["B10"],
   },
   {
     id: "B12", monthId: "month4_5", trackId: "B",
     label: "Task B12", title: "Reach out to the capstone professor",
-    body: "The professor you worked closely with on the capstone project (this is a different person from the phone-tag professor in Task B5): reach out in Month 4 or 5. This person watched you do serious, sustained work together. Reference the capstone specifically, share briefly what you have been working on, and ask if they would be open to catching up.",
+    body: "The professor you worked closely with on the capstone project: reach out this month. This person watched you do serious, sustained work. Reference the capstone specifically, share briefly what you have been working on, and ask if they would be open to catching up.",
     subtasks: [
       { id: "B12a", text: "Draft a short email referencing the capstone project specifically" },
       { id: "B12b", text: "Share one sentence about what you've been working on since" },
@@ -729,9 +754,9 @@ export const TASKS = [
   {
     id: "B13", monthId: "month4_5", trackId: "B",
     label: "Task B13", title: "Consider your first original LinkedIn post",
-    body: "Continue one LinkedIn engagement per week. By Month 5, consider posting one piece of original content — a brief observation about something you read in the field, a question you have been thinking about, a reflection on an event you attended. It does not have to be polished. It signals that you are engaged and thinking.",
+    body: "Continue one LinkedIn engagement per week. Consider posting one piece of original content — a brief observation about something you read in the field, a question you have been thinking about, a reflection on a congressional development you've been tracking, or an event you attended. It does not have to be polished. It signals that you are engaged and thinking.",
     subtasks: [
-      { id: "B13a", text: "Think of one observation or question from your field reading" },
+      { id: "B13a", text: "Think of one observation or question from your field reading or legislative tracker" },
       { id: "B13b", text: "Draft a short post (2–4 sentences)" },
       { id: "B13c", text: "Post it (or save as draft if not ready — that's okay too)" },
     ],
@@ -742,7 +767,7 @@ export const TASKS = [
 
   {
     id: "C9", monthId: "month4_5", trackId: "C",
-    label: "Task C9", title: "Attend a second virtual event and participate",
+    label: "Task C9", title: "Attend another virtual event and participate",
     body: "Attend one more virtual event in Month 4 or 5. This time, try to ask one question or make one comment in the chat. One. That is the whole goal.",
     subtasks: [
       { id: "C9a", text: "Find and register for a virtual event" },
@@ -752,7 +777,7 @@ export const TASKS = [
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Attended a second virtual event and participated — your voice is in the room",
+    winText: "Attended another virtual event and participated — your voice is in the room",
   },
   {
     id: "C10", monthId: "month4_5", trackId: "C",
@@ -767,22 +792,6 @@ export const TASKS = [
     hasOutput: false,
     winText: "Mapped ANC contacts to child welfare field — local and policy work are connecting",
     crossRefs: ["B9"],
-  },
-  {
-    id: "C11", monthId: "month4_5", trackId: "C",
-    label: "Task C11", title: "Set up a Congressional tracker for child welfare",
-    body: "Subscribe to one Congressional tracker for child welfare: Congress.gov alerts for relevant bills, or the First Focus on Children legislative tracker. Spend five minutes per week scanning it. You do not need to read every bill. You need to know what is moving.",
-    subtasks: [
-      { id: "C11a", text: "Go to Congress.gov and set up a bill alert for child welfare topics" },
-      { id: "C11b", text: "Or subscribe to First Focus on Children's legislative tracker (firstfocus.org)" },
-      { id: "C11c", text: "Scan it for 5 minutes — note one bill that's moving" },
-    ],
-    isRecurring: true,
-    recurringLabel: "Weekly legislative scan (5 min)",
-    recurringDescription: "5 minutes per week: scan your Congressional tracker and note what's moving.",
-    hasOutput: false,
-    winText: "Set up your Congressional tracker — you now know what's moving on the Hill",
-    timeBox: "5 minutes per week ongoing",
   },
 
   {
@@ -801,14 +810,15 @@ export const TASKS = [
   },
   {
     id: "D8", monthId: "month4_5", trackId: "D",
-    label: "Task D8", title: "First data analysis with AFCARS",
-    body: "Download a public child welfare dataset and do something with it. The AFCARS (Adoption and Foster Care Analysis and Reporting System) dataset is publicly available at acf.hhs.gov. Run basic descriptive statistics. Make one visualization. The act of completing it matters more than the output.",
+    label: "Task D8", title: "First data analysis with a public child welfare dataset",
+    body: "Download a public child welfare dataset and do something with it. The AFCARS (Adoption and Foster Care Analysis and Reporting System) dataset is publicly available at acf.hhs.gov. Run basic descriptive statistics. Make one visualization. The act of completing it matters more than the output. Also explore Chapin Hall's data resources — they are a leader in child welfare data and their work is a model for how data drives policy arguments in this field.",
     subtasks: [
       { id: "D8a", text: "Go to acf.hhs.gov and find the AFCARS public dataset" },
       { id: "D8b", text: "Download one year of data" },
       { id: "D8c", text: "Load it in R and run basic descriptive statistics (mean, median, counts)" },
       { id: "D8d", text: "Make one simple chart (a bar chart or histogram)" },
-      { id: "D8e", text: "Save your R script and the chart" },
+      { id: "D8e", text: "Browse chapinhall.org — look at how they present and use child welfare data" },
+      { id: "D8f", text: "Note: what questions could this dataset answer that would be useful for policy advocacy?" },
     ],
     isRecurring: false,
     hasOutput: true,
@@ -818,7 +828,7 @@ export const TASKS = [
   {
     id: "D9", monthId: "month4_5", trackId: "D",
     label: "Task D9", title: "Khan Academy Stats — first two units",
-    body: "Begin the Khan Academy Statistics and Probability course (free at khanacademy.org). Complete the first two units: Basic Statistics and Displaying and Comparing Quantitative Data. R is the tool — stats literacy is the goal. These two tracks reinforce each other: when you run a regression in R, you'll understand what you're looking at.",
+    body: "Begin the Khan Academy Statistics and Probability course (free at khanacademy.org). Complete the first two units: Basic Statistics and Displaying and Comparing Quantitative Data. R is the tool — stats literacy is the goal.",
     subtasks: [
       { id: "D9a", text: "Go to khanacademy.org → Statistics and Probability" },
       { id: "D9b", text: "Complete Unit 1: Basic Statistics (mean, median, mode, spread)" },
@@ -828,15 +838,15 @@ export const TASKS = [
     hasOutput: false,
     winText: "Completed two Khan Academy stats units — the foundation of data literacy",
     timeBox: "Two 30-minute sessions",
-    contextualHelp: "R is the software. But what you actually need — and what will be most useful in policy research — is the underlying statistical literacy: interpreting data, understanding what a regression is telling you, identifying patterns and trends, knowing when a finding is meaningful versus when sample size or methodology undermines it.\n\nThe goal by Month 6 is not mastery. It is being able to: (a) read a regression table in a policy report and explain what it says, (b) describe the difference between correlation and causation in plain language, (c) identify when a dataset is being used misleadingly. That level of literacy is what opens doors in policy research roles.",
+    contextualHelp: "R is the software. But what you actually need — and what will be most useful in policy research — is the underlying statistical literacy: interpreting data, understanding what a regression is telling you, identifying patterns and trends, knowing when a finding is meaningful versus when sample size or methodology undermines it.\n\nThe goal is not mastery. It is being able to: (a) read a regression table in a policy report and explain what it says, (b) describe the difference between correlation and causation in plain language, (c) identify when a dataset is being used misleadingly.\n\nFor qualitative data skills: qualitative research is also widely used in child welfare policy — focus groups, interviews, and case studies. An introduction: 'Qualitative Research & Evaluation Methods' by Patton is the standard reference; for a lighter start, the Pew Research Center's guide to qualitative methods (available free online) is practical and readable. Thematic analysis — coding interview transcripts to surface patterns — is a core skill worth developing over time.",
   },
   {
     id: "D10", monthId: "month4_5", trackId: "D",
     label: "Task D10", title: "Write drafts 3 and 4, revise draft 1",
-    body: "Continue writing: one draft per month. By the end of Month 5 you will have four drafts. Begin revising one earlier draft based on the feedback you received in Task D7.",
+    body: "Continue writing. By the end of Month 5 you will have four drafts. Begin revising one earlier draft based on the feedback you received in Task D7. Try a policy memo format for Draft 3 — this is one of the most common formats in policy work.",
     subtasks: [
       { id: "D10a", text: "Write Draft 3 (try a policy memo format)" },
-      { id: "D10b", text: "Write Draft 4 (try a comment letter format)" },
+      { id: "D10b", text: "Write Draft 4 (try a comment letter on a proposed regulation)" },
       { id: "D10c", text: "Revise Draft 1 or 2 using the feedback from Task D7" },
     ],
     isRecurring: false,
@@ -860,23 +870,23 @@ export const TASKS = [
   },
   {
     id: "E8", monthId: "month4_5", trackId: "E",
-    label: "Task E8", title: "Build two internal relationships",
-    body: "By Month 5, connect with at least two colleagues on different teams within your organization. These relationships matter both for your current role and for your job search — internal references and introductions from respected colleagues carry real weight.",
+    label: "Task E8", title: "Build three to five internal relationships",
+    body: "By Month 5, connect with at least three to five colleagues on different teams within your organization. The next month or two will be busy at work — start these conversations early, even briefly. Internal references and introductions carry real weight in the job search, and you also have direct network access to everyone in your organization right now. Use it.",
     subtasks: [
-      { id: "E8a", text: "Identify two colleagues on different teams whose work interests you" },
+      { id: "E8a", text: "Identify 3–5 colleagues on different teams whose work interests you" },
       { id: "E8b", text: "Reach out to each with a brief message or meeting request" },
-      { id: "E8c", text: "Have one conversation with each (virtual coffee, walk, or chat)" },
+      { id: "E8c", text: "Have at least one conversation with each (virtual coffee, walk, or chat)" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Built two internal relationships — less siloed, more connected",
+    winText: "Built internal relationships with colleagues across teams — well-connected before the search",
     crossRefs: ["E3","E5"],
   },
 
   {
     id: "F1", monthId: "month4_5", trackId: "F",
     label: "Task F1", title: "Rebuild your elevator pitch",
-    body: "Rebuild your elevator pitch. You had a strong one in grad school — update it for who you are now: what you have done, what you are looking for, and what you bring. Write it out. Practice saying it out loud (record yourself on your phone). It should be 60–90 seconds.",
+    body: "Rebuild your elevator pitch. Update it for who you are now: what you have done, what you are looking for, and what you bring. Write it out. Practice saying it out loud (record yourself on your phone). It should be 60–90 seconds.",
     subtasks: [
       { id: "F1a", text: "Write out your updated elevator pitch (who you are, what you've done, what you're looking for)" },
       { id: "F1b", text: "Record yourself saying it on your phone" },
@@ -905,20 +915,21 @@ export const TASKS = [
   },
 
   // ══════════════════════════════════════════════
-  // MONTH 6
+  // MONTH 6 (Phase 2 — Consolidate and Launch)
   // ══════════════════════════════════════════════
 
   {
     id: "B14", monthId: "month6", trackId: "B",
-    label: "Task B14", title: "Complete third informational interview",
-    body: "By end of Month 6: three informational interviews complete, at least one new warm contact, your mentor relationship re-established, and at least one professor reconnection attempted. These are your Phase 1 network targets.",
+    label: "Task B14", title: "Complete additional informational interviews",
+    body: "By end of Month 6: at least four to five informational interviews complete, at least two new warm contacts, your mentor relationship re-established, and both professor reconnections attempted. These are your Phase 1–2 network targets.",
     subtasks: [
-      { id: "B14a", text: "Have your third informational interview" },
+      { id: "B14a", text: "Have at least one more informational interview this month" },
       { id: "B14b", text: "Send a thank-you note within 24 hours" },
+      { id: "B14c", text: "Confirm: have both professor reconnections been attempted?" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Completed your third informational interview — Phase 1 network target reached",
+    winText: "Completed additional informational interviews — network meaningfully reactivated",
     crossRefs: ["B10","B11"],
   },
   {
@@ -940,12 +951,13 @@ export const TASKS = [
   {
     id: "C12", monthId: "month6", trackId: "C",
     label: "Task C12", title: "Field knowledge self-test",
-    body: "Can you hold a substantive 10-minute conversation about what is happening in child welfare policy right now? Can you explain the current state of FFPSA implementation, one active federal legislative priority, and one DC-specific development? If yes — you are ready for professional-level networking conversations. If not, spend one focused session this month closing that gap.",
+    body: "Can you hold a substantive 10-minute conversation about what is happening in child welfare policy right now? Can you explain the current state of FFPSA implementation, one active federal legislative priority, one DC-specific development, and what's moving in the relevant congressional committees? If yes — you are ready for professional-level networking conversations. If not, spend one focused session this month closing that gap.",
     subtasks: [
       { id: "C12a", text: "Test yourself: explain FFPSA implementation status out loud" },
-      { id: "C12b", text: "Test yourself: name one active federal legislative priority" },
+      { id: "C12b", text: "Test yourself: name one active federal legislative priority and its key sponsors" },
       { id: "C12c", text: "Test yourself: name one DC-specific development" },
-      { id: "C12d", text: "If any gap: spend 30 minutes closing it with a targeted read" },
+      { id: "C12d", text: "Test yourself: what committee has jurisdiction and what's the political landscape?" },
+      { id: "C12e", text: "If any gap: spend 30 minutes closing it with a targeted read" },
     ],
     isRecurring: false,
     hasOutput: false,
@@ -954,7 +966,7 @@ export const TASKS = [
   {
     id: "C13", monthId: "month6", trackId: "C",
     label: "Task C13", title: "Write your org's contribution summary",
-    body: "By Month 6 you should have read four to five pieces from your organization's publication history. Write a one-paragraph summary of what your org stands for and what it has contributed to the field. This is both field knowledge and interview preparation.",
+    body: "By Month 6 you should have read multiple pieces from your organization's publication history. Write a one-paragraph summary of what your org stands for and what it has contributed to the field. This is both field knowledge and interview preparation.",
     subtasks: [
       { id: "C13a", text: "Review your field journal notes on your org's publications" },
       { id: "C13b", text: "Write a one-paragraph summary: what does your org stand for?" },
@@ -969,32 +981,34 @@ export const TASKS = [
 
   {
     id: "D11", monthId: "month6", trackId: "D",
-    label: "Task D11", title: "Complete your 5-piece writing portfolio",
-    body: "By end of Month 6: five solo-authored policy writing samples in different formats (one-pager, fact sheet, brief, memo, or comment letter). These are your portfolio. They exist. That matters.",
+    label: "Task D11", title: "Complete your writing portfolio",
+    body: "By end of Month 6: five or more solo-authored policy writing samples in different formats. Your portfolio should include: a one-pager, a legislative fact sheet, a policy memo, a comment letter, and a research synthesis or brief. These are your credential. They exist. That matters.",
     subtasks: [
-      { id: "D11a", text: "Write Draft 5 (choose a format you haven't tried yet)" },
+      { id: "D11a", text: "Write Draft 5 — a research synthesis: take 2–3 pieces you've read and synthesize the key findings into a 500-word brief" },
       { id: "D11b", text: "Do a final light edit on your best 2–3 pieces" },
       { id: "D11c", text: "Create a folder called 'Writing Portfolio' with your 5 best drafts" },
+      { id: "D11d", text: "Note: which 2–3 pieces would you send to a hiring manager?" },
     ],
     isRecurring: false,
     hasOutput: true,
-    winText: "Completed your 5-piece writing portfolio — a real credential in your hands",
-    contextualHelp: "Employers will not ask where your writing samples were published — they will ask to see your writing. In policy, analytical, and advocacy roles, writing samples are almost always standalone documents: memos, one-pagers, briefs, comment letters. Very few entry-to-mid-level candidates have published work.\n\nWhat matters is whether the writing is clear, structured, well-argued, and demonstrates policy thinking. A clean, solo-authored one-pager you wrote as practice is a legitimate and appropriate writing sample. If it feels more credible to frame it, you can note \"prepared independently\" or \"prepared for professional development\" — but in most cases, you simply send it. Nobody will ask whether it appeared in a journal.",
+    winText: "Completed your writing portfolio — a real credential in your hands",
+    contextualHelp: "Employers will not ask where your writing samples were published — they will ask to see your writing. In policy, analytical, and advocacy roles, writing samples are almost always standalone documents: memos, one-pagers, briefs, comment letters. Very few entry-to-mid-level candidates have published work.\n\nWhat matters is whether the writing is clear, structured, well-argued, and demonstrates policy thinking. A clean, solo-authored one-pager you wrote as practice is a legitimate and appropriate writing sample. If it feels more credible to frame it, you can note \"prepared independently\" or \"prepared for professional development\" — but in most cases, you simply send it. Nobody will ask whether it appeared in a journal.\n\nFor building out your portfolio further: consider adding a stakeholder analysis memo (who supports this policy, who opposes it, what are the leverage points), a congressional testimony summary (summarize real testimony and add your analysis), or an advocacy email to a hypothetical elected official. These formats demonstrate range and are common in policy analyst roles.",
     crossRefs: ["D3","D5","D10"],
   },
   {
     id: "D12", monthId: "month6", trackId: "D",
-    label: "Task D12", title: "R and stats readiness check",
-    body: "By Month 6 you should be able to load a dataset, run basic descriptive statistics, produce a clean visualization, and explain what a regression output is showing at a high level. If you are behind on writing, deprioritize this — writing samples are higher leverage for the job search. Data skills continue building on their own timeline.",
+    label: "Task D12", title: "R, stats, and qualitative skills check",
+    body: "By Month 6 you should be able to load a dataset, run basic descriptive statistics, produce a clean visualization, and explain what a regression output is showing. You should also have a working understanding of what qualitative data analysis looks like. If you are behind on writing, deprioritize this — writing samples are higher leverage for the job search. Data skills continue building on their own timeline.",
     subtasks: [
       { id: "D12a", text: "Test: load a dataset in R and run summary statistics" },
       { id: "D12b", text: "Test: produce one clean chart" },
       { id: "D12c", text: "Test: explain a regression output in plain language" },
-      { id: "D12d", text: "Note any gaps to continue working on in Phase 2" },
+      { id: "D12d", text: "Read one Chapin Hall brief — note how they present quantitative findings" },
+      { id: "D12e", text: "Note any gaps to continue working on in Phase 2" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Completed R and stats readiness check — data literacy baseline established",
+    winText: "Completed data skills readiness check — baseline established",
     crossRefs: ["D8","D9"],
   },
 
@@ -1028,23 +1042,23 @@ export const TASKS = [
   },
 
   // ══════════════════════════════════════════════
-  // MONTHS 7–9 (Phase 2)
+  // MONTHS 4–6 ACTIVE SEARCH (Phase 2)
   // ══════════════════════════════════════════════
 
   {
     id: "B16", monthId: "month7_9", trackId: "B",
     label: "Task B16", title: "Continue informational interviews — signal you're in the market",
-    body: "Continue one informational interview per month. Shift the focus: in Phase 1 these were about reconnecting and learning. In Phase 2, they are also about signaling that you are in the market. Have a clear, comfortable answer ready for when people ask what you are looking for and why.",
+    body: "Continue one informational interview per month. Shift the focus: these are now also about signaling that you are in the market. Have a clear, comfortable answer ready for when people ask what you are looking for and why.",
     subtasks: [
-      { id: "B16a", text: "Have one informational interview in Month 7" },
-      { id: "B16b", text: "Have one informational interview in Month 8" },
-      { id: "B16c", text: "Have one informational interview in Month 9" },
+      { id: "B16a", text: "Have one informational interview this month" },
+      { id: "B16b", text: "Have one informational interview next month" },
+      { id: "B16c", text: "Have one informational interview the following month" },
     ],
     isRecurring: true,
     recurringLabel: "Monthly informational interview",
     recurringDescription: "One per month: signal that you're in the market. Have your 'what I'm looking for' answer ready.",
     hasOutput: false,
-    winText: "Continued informational interviews in Phase 2 — your network knows you're looking",
+    winText: "Continued informational interviews — your network knows you're looking",
   },
   {
     id: "B17", monthId: "month7_9", trackId: "B",
@@ -1064,7 +1078,7 @@ export const TASKS = [
   {
     id: "D13", monthId: "month7_9", trackId: "D",
     label: "Task D13", title: "Revise writing for your interview portfolio",
-    body: "Continue monthly writing — pivot from original drafts to revisions and refinements. By Month 9 you should have two or three pieces you would be comfortable sharing with a hiring manager as writing samples.",
+    body: "Pivot from original drafts to revisions and refinements. By the end of active search you should have two or three pieces you would be comfortable sharing with a hiring manager. Consider adding a stakeholder analysis memo or a congressional testimony summary to demonstrate range.",
     subtasks: [
       { id: "D13a", text: "Choose your 2–3 strongest drafts from Phase 1" },
       { id: "D13b", text: "Do a thorough revision of each — clarity, structure, argument" },
@@ -1078,16 +1092,17 @@ export const TASKS = [
   },
   {
     id: "D14", monthId: "month7_9", trackId: "D",
-    label: "Task D14", title: "Continue R and stats — interview readiness",
-    body: "Continue R and the Khan Academy stats course at your own pace. The goal by Month 9 is being able to speak confidently in an interview about your data literacy — what tools you have used, what you have done with data, what you want to learn, and how you have seen data used to drive policy arguments. Competence and self-awareness matter more than mastery.",
+    label: "Task D14", title: "Continue data and qualitative skills — interview readiness",
+    body: "Continue R and the Khan Academy stats course at your own pace. Also continue developing qualitative data skills — thematic analysis, reading and evaluating interview-based research, understanding when qualitative vs quantitative methods are appropriate. Chapin Hall is a good model for how these methods combine in child welfare research. The goal is being able to speak confidently in an interview: what tools you've used, what you've done with data, what you want to learn, and how you've seen data used to drive policy arguments.",
     subtasks: [
       { id: "D14a", text: "Continue R for Data Science — complete at least 2 more chapters" },
       { id: "D14b", text: "Continue Khan Academy stats — complete 2 more units" },
-      { id: "D14c", text: "Practice: explain your data work in an interview context (out loud)" },
+      { id: "D14c", text: "Read one Chapin Hall report that uses mixed methods — note how they combine quant and qual" },
+      { id: "D14d", text: "Practice: explain your data work in an interview context (out loud)" },
     ],
     isRecurring: false,
     hasOutput: false,
-    winText: "Continued R and stats work — can speak confidently about data in interviews",
+    winText: "Continued data and qualitative skills — can speak confidently about research methods in interviews",
     crossRefs: ["D12"],
   },
 
@@ -1111,7 +1126,7 @@ export const TASKS = [
     body: "Your salary floor is $80k. Do not negotiate yourself below it. Your current total compensation is approximately $77,700 ($70k salary + $7,700 in employer 401k contributions). Any role at $80k base with a standard employer match represents a meaningful improvement. Policy analyst and associate roles at DC coalition orgs and think tanks typically range $75k–$110k at your experience level — you are in the market.",
     subtasks: [
       { id: "F6a", text: "Write your salary floor ($80k) somewhere you'll see it during negotiations" },
-      { id: "F6b", text: "Research salary ranges at your target orgs (look at job postings, Glassdoor, Levels.fyi for nonprofits)" },
+      { id: "F6b", text: "Research salary ranges at your target orgs (job postings, Glassdoor)" },
       { id: "F6c", text: "Practice saying your number out loud: \"I'm looking for $X and above\"" },
     ],
     isRecurring: false,
@@ -1132,12 +1147,11 @@ export const TASKS = [
     hasOutput: false,
     winText: "Used your writing samples actively in an application — your portfolio is working for you",
     crossRefs: ["D11","D13"],
-    contextualHelp: "Employers will not ask where your writing samples were published — they will ask to see your writing. In policy, analytical, and advocacy roles, writing samples are almost always standalone documents. Very few entry-to-mid-level candidates have published work.\n\nWhat matters is whether the writing is clear, structured, well-argued, and demonstrates policy thinking. A clean, solo-authored one-pager is a legitimate and appropriate writing sample. If asked about it, you can simply say \"this is an independent policy analysis I prepared\" and leave it at that.",
   },
   {
     id: "F8", monthId: "month7_9", trackId: "F",
     label: "Task F8", title: "Prepare a plan for comparison pain during the search",
-    body: "Have a plan for the comparison pain before it hits during the search. Job searching on LinkedIn, seeing peers' titles, getting rejected — these will trigger the same patterns you've been working on. Identify in advance: a specific person to text, a time limit on LinkedIn during the search, a grounding ritual. Discuss this with your therapist or coach before it becomes acute.",
+    body: "Have a plan for the comparison pain before it hits. Job searching on LinkedIn, seeing peers' titles, getting rejected — these will trigger the same patterns you've been working on. Identify in advance: a specific person to text, a time limit on LinkedIn during the search, a grounding ritual. Discuss this with your therapist or coach before it becomes acute.",
     subtasks: [
       { id: "F8a", text: "Identify one person you'll text when comparison pain hits" },
       { id: "F8b", text: "Set a LinkedIn time limit during job search (e.g., 20 min max per session)" },
