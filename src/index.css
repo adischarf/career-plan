@@ -66,48 +66,22 @@
 }
 
 /* ── Migraine Mode ── */
-/* Mimics iPhone's "Color Tint" accessibility feature at full red intensity.
-   Keeps the UI fully readable at normal brightness — just tints everything red/amber
-   to eliminate blue and green light, which are the primary migraine triggers.
-   This is NOT a dark mode. The interface stays normal, just looks like a warm red filter. */
+/* Replicates iPhone "Color Filters → Color Tint" at max red/intensity.
+   The screen stays at NORMAL brightness and full contrast — fully readable.
+   Everything just shifts toward warm red/amber, eliminating blue and green light.
+   This is a filter overlay, not a dark mode. */
 body.migraine-mode {
-  /* Warm the white point — cream/white surfaces go warmer amber-tinted */
-  --cream:               #FFF0DC;
-  --cream-dark:          #FFE4C0;
-  --white:               #FFF8EE;
-  --border:              #F0D8B8;
-  --border-strong:       #E0C498;
-  /* Text stays readable */
-  --ink:                 #3A2010;
-  --ink-light:           #5C3A1E;
-  --bark:                #8C6040;
-  --bark-light:          #C4906A;
-  /* Mute cool colors (blues, greens, purples) — replace with warm equivalents */
-  --sage:                #A87830;
-  --sage-light:          #FFE8B0;
-  --teal:                #B07030;
-  --teal-light:          #FFE4A0;
-  --purple:              #C06840;
-  --purple-light:        #FFE0C8;
-  --lilac:               #C08040;
-  --lilac-light:         #FFDDB0;
-  --lilac-dark:          #A05A20;
-  /* Warm the accent colors */
-  --bougainvillea:       #CC4820;
-  --bougainvillea-light: #FFD8C0;
-  --bougainvillea-dark:  #A03010;
-  --peony:               #C05828;
-  --peony-light:         #FFE0C8;
-  --peony-dark:          #A03818;
-  --gold:                #CC7010;
-  --gold-light:          #FFE8A0;
-  /* The key effect: a warm red/amber overlay via CSS filter
-     hue-rotate(340deg) pushes blues→red, greens→yellow-red
-     sepia adds warm amber base, saturate boosts the red warmth */
-  filter: sepia(0.6) saturate(1.4) hue-rotate(340deg);
+  /* Warm up surfaces slightly so they tint redder under the filter */
+  --cream:      #FFF4E8;
+  --cream-dark: #FFE8D0;
+  --white:      #FFFAF2;
+  /* filter: sepia converts to warm brown first, then hue-rotate(320deg)
+     shifts that brown into red. saturate(3) makes it vivid like iPhone's full-intensity tint.
+     This keeps whites as pink-red, blues become red, greens become orange — all readable. */
+  filter: sepia(1) saturate(3) hue-rotate(320deg);
 }
 
-/* Kill all animations in migraine mode */
+/* Kill animations in migraine mode */
 body.migraine-mode *,
 body.migraine-mode *::before,
 body.migraine-mode *::after {
@@ -115,7 +89,6 @@ body.migraine-mode *::after {
   animation-iteration-count: 1 !important;
   transition-duration: 0.15s !important;
 }
-
 
 
 /* ── Reset & Base ── */
