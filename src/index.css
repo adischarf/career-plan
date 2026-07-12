@@ -4,8 +4,8 @@
 /* ── Design Tokens ── */
 :root {
   /* Core palette */
-  --cream:           #FAF8F5;
-  --cream-dark:      #F2EDE6;
+  --cream:           #F7F3EE;
+  --cream-dark:      #EDE5DA;
   --ink:             #2C2825;
   --ink-light:       #4A4440;
   --bark:            #8C7B6E;
@@ -33,9 +33,9 @@
   --teal-light:      #E3F3F5;
 
   /* UI */
-  --white:           #FFFFFF;
-  --border:          #E8E2DA;
-  --border-strong:   #D4CCC2;
+  --white:           #FDFAF7;
+  --border:          #E2D8CC;
+  --border-strong:   #CEC3B5;
   --shadow-sm:       0 1px 3px rgba(44,40,37,0.06), 0 1px 2px rgba(44,40,37,0.04);
   --shadow-md:       0 4px 12px rgba(44,40,37,0.08), 0 2px 4px rgba(44,40,37,0.04);
   --shadow-lg:       0 8px 32px rgba(44,40,37,0.12), 0 4px 8px rgba(44,40,37,0.06);
@@ -67,24 +67,48 @@
 
 /* ── Migraine Mode ── */
 body.migraine-mode {
-  --cream:           #FFF8ED;
-  --cream-dark:      #F5EDD8;
-  --ink:             #3D2E1E;
-  --ink-light:       #5C4433;
-  --bark:            #9E7B5A;
-  --white:           #FFFBF2;
-  --border:          #E8D8BE;
-  --lilac:           #C4A882;
-  --lilac-light:     #F5EDD8;
-  --peony:           #D4A070;
-  --peony-light:     #FAF0E0;
-  --bougainvillea:   #C48060;
-  --bougainvillea-light: #FAE8DC;
-  --sage:            #8A9E70;
-  --sage-light:      #EAF0DC;
-  --gold:            #B89040;
-  --teal:            #7A9890;
-  filter: sepia(20%) saturate(85%);
+  /* Deep amber/red-warm tones — mimics iPhone's red tint accessibility mode */
+  --cream:           #2A1F0E;
+  --cream-dark:      #1E1508;
+  --ink:             #F5DDB0;
+  --ink-light:       #D4B882;
+  --bark:            #A8845A;
+  --bark-light:      #7A6040;
+  --white:           #2E2210;
+  --border:          #4A3520;
+  --border-strong:   #604530;
+  --lilac:           #8A6840;
+  --lilac-light:     #3A2810;
+  --lilac-dark:      #C4A060;
+  --peony:           #904020;
+  --peony-light:     #3A1A08;
+  --peony-dark:      #C06030;
+  --bougainvillea:   #A03010;
+  --bougainvillea-light: #3A1505;
+  --bougainvillea-dark:  #C04020;
+  --sage:            #607040;
+  --sage-light:      #2A3015;
+  --gold:            #906820;
+  --gold-light:      #2A2008;
+  --teal:            #506050;
+  --teal-light:      #1A2015;
+  --purple:          #704838;
+  --purple-light:    #2A1810;
+  --shadow-sm:       0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:       0 4px 12px rgba(0,0,0,0.5);
+  /* Reduce brightness and keep the warm red tint */
+  filter: brightness(0.55) saturate(60%) sepia(40%);
+  /* Disable all transitions to reduce motion flicker */
+  --transition-speed: 0s;
+}
+
+/* In migraine mode: kill all animations, slow transitions, bright flashes */
+body.migraine-mode *,
+body.migraine-mode *::before,
+body.migraine-mode *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.1s !important;
 }
 
 /* ── Reset & Base ── */
@@ -227,6 +251,14 @@ button {
   box-shadow: var(--shadow-sm);
   padding: var(--space-6);
 }
+
+/* Track-colored left accent on cards used inside track sections */
+.card-track-a { border-left: 3px solid var(--sage); }
+.card-track-b { border-left: 3px solid var(--lilac); }
+.card-track-c { border-left: 3px solid var(--gold); }
+.card-track-d { border-left: 3px solid var(--teal); }
+.card-track-e { border-left: 3px solid var(--purple); }
+.card-track-f { border-left: 3px solid var(--bougainvillea); }
 
 .card-hover {
   transition: all 0.18s ease;
