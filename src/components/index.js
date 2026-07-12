@@ -1,3 +1,5 @@
+import { TASKS, MONTHS } from '../data/planData';
+
 // ─── SunToggle.jsx ────────────────────────────────────────────────────────────
 export function SunToggle({ migraineMode, onToggle }) {
   return (
@@ -271,7 +273,6 @@ export function InactivityBanner({ daysSince, storage, bannerId, onDismiss }) {
   const { data } = storage;
 
   // Find next incomplete task
-  const { TASKS, MONTHS } = require('../data/planData');
   const currentMonth = MONTHS.find(m => m.id === data.currentMonthId);
   const monthTasks = TASKS.filter(t => t.monthId === data.currentMonthId);
   const nextTask = monthTasks.find(t => !data.completedTasks[t.id]);
