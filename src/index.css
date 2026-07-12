@@ -4,38 +4,38 @@
 /* ── Design Tokens ── */
 :root {
   /* Core palette */
-  --cream:           #F7F3EE;
-  --cream-dark:      #EDE5DA;
+  --cream:           #F5EFE6;
+  --cream-dark:      #E8DCCE;
   --ink:             #2C2825;
   --ink-light:       #4A4440;
   --bark:            #8C7B6E;
   --bark-light:      #BAB0A8;
 
   /* Flower palette */
-  --lilac:           #B8A9D4;
-  --lilac-light:     #EAE5F5;
-  --lilac-dark:      #8B77BB;
-  --peony:           #E8A0B0;
-  --peony-light:     #FAEEF1;
-  --peony-dark:      #C4607A;
-  --bougainvillea:   #D4607A;
-  --bougainvillea-light: #FAE8ED;
-  --bougainvillea-dark:  #A83D56;
+  --lilac:           #A895CC;
+  --lilac-light:     #EAE4F7;
+  --lilac-dark:      #7A64B0;
+  --peony:           #E0889E;
+  --peony-light:     #FDEDF1;
+  --peony-dark:      #C04870;
+  --bougainvillea:   #D04878;
+  --bougainvillea-light: #FDDDE8;
+  --bougainvillea-dark:  #A02858;
 
-  /* Track accents */
-  --sage:            #7FA882;
-  --sage-light:      #E8F3E9;
-  --gold:            #C8961E;
-  --gold-light:      #FDF3DC;
-  --purple:          #9B7EC8;
-  --purple-light:    #EFE9F8;
-  --teal:            #5A9EA8;
-  --teal-light:      #E3F3F5;
+  /* Track accents — more saturated */
+  --sage:            #5A9E6A;
+  --sage-light:      #D8F0DC;
+  --gold:            #C47E10;
+  --gold-light:      #FDEECB;
+  --purple:          #8B5EC8;
+  --purple-light:    #EAE0F8;
+  --teal:            #3A8E9E;
+  --teal-light:      #CCEEF4;
 
   /* UI */
-  --white:           #FDFAF7;
-  --border:          #E2D8CC;
-  --border-strong:   #CEC3B5;
+  --white:           #FDFAF6;
+  --border:          #DDD3C4;
+  --border-strong:   #C8BAA8;
   --shadow-sm:       0 1px 3px rgba(44,40,37,0.06), 0 1px 2px rgba(44,40,37,0.04);
   --shadow-md:       0 4px 12px rgba(44,40,37,0.08), 0 2px 4px rgba(44,40,37,0.04);
   --shadow-lg:       0 8px 32px rgba(44,40,37,0.12), 0 4px 8px rgba(44,40,37,0.06);
@@ -66,50 +66,57 @@
 }
 
 /* ── Migraine Mode ── */
+/* Mimics iPhone's "Color Tint" accessibility feature at full red intensity.
+   Keeps the UI fully readable at normal brightness — just tints everything red/amber
+   to eliminate blue and green light, which are the primary migraine triggers.
+   This is NOT a dark mode. The interface stays normal, just looks like a warm red filter. */
 body.migraine-mode {
-  /* Deep amber/red-warm tones — mimics iPhone's red tint accessibility mode */
-  --cream:           #2A1F0E;
-  --cream-dark:      #1E1508;
-  --ink:             #F5DDB0;
-  --ink-light:       #D4B882;
-  --bark:            #A8845A;
-  --bark-light:      #7A6040;
-  --white:           #2E2210;
-  --border:          #4A3520;
-  --border-strong:   #604530;
-  --lilac:           #8A6840;
-  --lilac-light:     #3A2810;
-  --lilac-dark:      #C4A060;
-  --peony:           #904020;
-  --peony-light:     #3A1A08;
-  --peony-dark:      #C06030;
-  --bougainvillea:   #A03010;
-  --bougainvillea-light: #3A1505;
-  --bougainvillea-dark:  #C04020;
-  --sage:            #607040;
-  --sage-light:      #2A3015;
-  --gold:            #906820;
-  --gold-light:      #2A2008;
-  --teal:            #506050;
-  --teal-light:      #1A2015;
-  --purple:          #704838;
-  --purple-light:    #2A1810;
-  --shadow-sm:       0 1px 3px rgba(0,0,0,0.4);
-  --shadow-md:       0 4px 12px rgba(0,0,0,0.5);
-  /* Reduce brightness and keep the warm red tint */
-  filter: brightness(0.55) saturate(60%) sepia(40%);
-  /* Disable all transitions to reduce motion flicker */
-  --transition-speed: 0s;
+  /* Warm the white point — cream/white surfaces go warmer amber-tinted */
+  --cream:               #FFF0DC;
+  --cream-dark:          #FFE4C0;
+  --white:               #FFF8EE;
+  --border:              #F0D8B8;
+  --border-strong:       #E0C498;
+  /* Text stays readable */
+  --ink:                 #3A2010;
+  --ink-light:           #5C3A1E;
+  --bark:                #8C6040;
+  --bark-light:          #C4906A;
+  /* Mute cool colors (blues, greens, purples) — replace with warm equivalents */
+  --sage:                #A87830;
+  --sage-light:          #FFE8B0;
+  --teal:                #B07030;
+  --teal-light:          #FFE4A0;
+  --purple:              #C06840;
+  --purple-light:        #FFE0C8;
+  --lilac:               #C08040;
+  --lilac-light:         #FFDDB0;
+  --lilac-dark:          #A05A20;
+  /* Warm the accent colors */
+  --bougainvillea:       #CC4820;
+  --bougainvillea-light: #FFD8C0;
+  --bougainvillea-dark:  #A03010;
+  --peony:               #C05828;
+  --peony-light:         #FFE0C8;
+  --peony-dark:          #A03818;
+  --gold:                #CC7010;
+  --gold-light:          #FFE8A0;
+  /* The key effect: a warm red/amber overlay via CSS filter
+     hue-rotate(340deg) pushes blues→red, greens→yellow-red
+     sepia adds warm amber base, saturate boosts the red warmth */
+  filter: sepia(0.6) saturate(1.4) hue-rotate(340deg);
 }
 
-/* In migraine mode: kill all animations, slow transitions, bright flashes */
+/* Kill all animations in migraine mode */
 body.migraine-mode *,
 body.migraine-mode *::before,
 body.migraine-mode *::after {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
-  transition-duration: 0.1s !important;
+  transition-duration: 0.15s !important;
 }
+
+
 
 /* ── Reset & Base ── */
 *, *::before, *::after {

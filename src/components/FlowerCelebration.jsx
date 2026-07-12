@@ -1,358 +1,403 @@
 // FlowerCelebration.jsx
-// Plays when completing a month (lilac), track (peony), or phase (bougainvillea).
-// Stays on screen until tapped. Replayable.
-// In migraine mode: shows a text banner instead of animation.
+// Milestone animations: lilac (month), peony (track), bougainvillea (phase).
+// Each flower type has a distinct look with proper petal shapes.
+// Confetti petals rain down in the background.
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
+// ── Flower definitions ────────────────────────────────────────────────────────
 const FLOWERS = {
   lilac: {
-    petalColor: '#B8A9D4',
-    petalDark:  '#8B77BB',
-    centerColor:'#F5F0FF',
-    centerDot:  '#8B77BB',
-    leafColor:  '#7FA882',
-    size: 1,
+    petals:      6,
+    petalColor:  '#A895CC',
+    petalColor2: '#C8B8E8',
+    centerColor: '#F8EFD8',
+    centerDot:   '#7A64B0',
+    stemColor:   '#5A9E6A',
+    leafColor:   '#5A9E6A',
+    confettiColors: ['#A895CC','#C8B8E8','#EAE4F7','#7A64B0'],
+    count: 1,
+    label: 'Month Complete',
   },
   peony: {
-    petalColor: '#E8A0B0',
-    petalDark:  '#C4607A',
-    centerColor:'#FFF0F3',
-    centerDot:  '#C4607A',
-    leafColor:  '#7FA882',
-    size: 1,
+    petals:      10,
+    petalColor:  '#E0889E',
+    petalColor2: '#F4B8C8',
+    centerColor: '#FFF0F4',
+    centerDot:   '#C04870',
+    stemColor:   '#5A9E6A',
+    leafColor:   '#5A9E6A',
+    confettiColors: ['#E0889E','#F4B8C8','#FDEDF1','#C04870'],
+    count: 2,
+    label: 'Track Complete',
   },
   bougainvillea: {
-    petalColor: '#D4607A',
-    petalDark:  '#A83D56',
-    centerColor:'#FFE8ED',
-    centerDot:  '#A83D56',
-    leafColor:  '#5A9EA8',
-    size: 1.25,
+    petals:      5,
+    petalColor:  '#D04878',
+    petalColor2: '#F07098',
+    centerColor: '#FFF0F4',
+    centerDot:   '#A02858',
+    stemColor:   '#3A8E9E',
+    leafColor:   '#3A8E9E',
+    confettiColors: ['#D04878','#F07098','#FDDDE8','#A02858','#F5A0B8'],
+    count: 3,
+    label: 'Phase Complete',
   },
 };
 
-// ── Individual petal (stylized, illustrated) ──────────────────────────────────
-function Petal({ cx, cy, angle, color, darkColor, scale = 1, delay = 0, animating }) {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    if (!animating) { setShow(false); return; }
-    const t = setTimeout(() => setShow(true), delay);
-    return () => clearTimeout(t);
-  }, [animating, delay]);
+// ── SVG flower: proper petal shapes using cubic bezier paths ─────────────────
+function Flower({ type, x, y, size = 1, delay = 0, visible }) {
+  const f = FLOWERS[type];
+  const r = 38 * size;        // petal orbit radius
+  const pw = 20 * size;       // petal width
+  const ph = 32 * size;       // petal height
+  const cr = 12 * size;       // center radius
+  const stemLen = 60 * size;
 
-  const rad = (angle * Math.PI) / 180;
-  const dist = 38 * scale;
-  const px = cx + dist * Math.cos(rad);
-  const py = cy + dist * Math.sin(rad);
-  const pw = 22 * scale;
-  const ph = 32 * scale;
+  const petalAngles = Array.from({ length: f.petals }, (_, i) =>
+    (i * 360) / f.petals - 90
+  );
 
   return (
     <g
-      transform={`translate(${px}, ${py}) rotate(${angle + 90})`}
       style={{
-        opacity: show ? 1 : 0,
-        transform: show
-          ? `translate(${px}px, ${py}px) rotate(${angle + 90}deg) scale(1)`
-          : `translate(${px}px, ${py}px) rotate(${angle + 90}deg) scale(0)`,
-        transformOrigin: `${px}px ${py}px`,
-        transition: `opacity 0.4s ease ${delay}ms, transform 0.5s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms`,
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'scale(1)' : 'scale(0)',
+        transformOrigin: `${x}px ${y}px`,
+        transition: `opacity 0.5s ease ${delay}ms, transform 0.6s cubic-bezier(0.34,1.56,0.64,1) ${delay}ms`,
       }}
     >
-      {/* Main petal shape */}
-      <ellipse cx={0} cy={-ph * 0.3} rx={pw / 2} ry={ph / 2} fill={color} opacity={0.9} />
-      {/* Petal highlight */}
-      <ellipse cx={-pw * 0.12} cy={-ph * 0.45} rx={pw * 0.18} ry={ph * 0.28} fill={darkColor} opacity={0.25} />
-      {/* Petal vein */}
-      <line x1={0} y1={0} x2={0} y2={-ph * 0.65} stroke={darkColor} strokeWidth={0.8 * scale} opacity={0.3} strokeLinecap="round" />
+      {/* Stem */}
+      <path
+        d={`M ${x} ${y + cr} C ${x} ${y + cr + 20 * size}, ${x - 5 * size} ${y + cr + 40 * size}, ${x - 3 * size} ${y + stemLen + cr}`}
+        fill="none" stroke={f.stemColor} strokeWidth={3 * size} strokeLinecap="round"
+        style={{ opacity: visible ? 0.8 : 0, transition: `opacity 0.4s ease ${delay + 200}ms` }}
+      />
+      {/* Leaves */}
+      {[1, -1].map((side, li) => {
+        const lx = x + side * 14 * size;
+        const ly = y + cr + 35 * size;
+        return (
+          <ellipse key={li} cx={lx} cy={ly} rx={10 * size} ry={16 * size}
+            fill={f.leafColor} opacity={0.75}
+            transform={`rotate(${side * 35}, ${lx}, ${ly})`}
+            style={{ opacity: visible ? 0.75 : 0, transition: `opacity 0.4s ease ${delay + 250 + li * 50}ms` }}
+          />
+        );
+      })}
+      {/* Petals — using path for organic teardrop shape */}
+      {petalAngles.map((angle, i) => {
+        const rad = (angle * Math.PI) / 180;
+        const px = x + r * Math.cos(rad);
+        const py = y + r * Math.sin(rad);
+        const isOuter = type === 'peony' && i < 5;
+        const pScale = isOuter ? 1 : 0.78;
+        const pDelay = delay + 100 + i * 55;
+        return (
+          <g key={i} transform={`translate(${px},${py}) rotate(${angle + 90})`}
+            style={{
+              opacity: visible ? 1 : 0,
+              transform: visible
+                ? `translate(${px}px,${py}px) rotate(${angle + 90}deg) scale(1)`
+                : `translate(${px}px,${py}px) rotate(${angle + 90}deg) scale(0.1)`,
+              transformOrigin: `${px}px ${py}px`,
+              transition: `opacity 0.4s ease ${pDelay}ms, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) ${pDelay}ms`,
+            }}
+          >
+            {/* Main petal — teardrop bezier */}
+            <path
+              d={`M 0 0
+                  C ${-pw * 0.5 * pScale} ${-ph * 0.2 * pScale},
+                    ${-pw * 0.55 * pScale} ${-ph * 0.75 * pScale},
+                    0 ${-ph * pScale}
+                  C ${pw * 0.55 * pScale} ${-ph * 0.75 * pScale},
+                    ${pw * 0.5 * pScale} ${-ph * 0.2 * pScale},
+                    0 0 Z`}
+              fill={i % 2 === 0 ? f.petalColor : f.petalColor2}
+              opacity={0.92}
+            />
+            {/* Inner highlight streak */}
+            <path
+              d={`M 0 ${-ph * 0.05 * pScale} C 0 ${-ph * 0.3 * pScale}, 0 ${-ph * 0.5 * pScale}, 0 ${-ph * 0.75 * pScale}`}
+              fill="none" stroke="white" strokeWidth={1.5 * size * pScale} opacity={0.35} strokeLinecap="round"
+            />
+          </g>
+        );
+      })}
+      {/* Center circle */}
+      <circle cx={x} cy={y} r={cr}
+        fill={f.centerColor} stroke={f.centerDot} strokeWidth={1.5 * size}
+        style={{ opacity: visible ? 1 : 0, transition: `opacity 0.3s ease ${delay + 300}ms` }}
+      />
+      {/* Center stamens */}
+      {Array.from({ length: 7 }, (_, i) => {
+        const a = (i * 360 / 7) * Math.PI / 180;
+        const sr = cr * 0.55;
+        return (
+          <circle key={i} cx={x + sr * Math.cos(a)} cy={y + sr * Math.sin(a)}
+            r={2.2 * size} fill={f.centerDot} opacity={0.7}
+            style={{ opacity: visible ? 0.7 : 0, transition: `opacity 0.3s ease ${delay + 350 + i * 25}ms` }}
+          />
+        );
+      })}
+      <circle cx={x} cy={y} r={4 * size} fill={f.centerDot}
+        style={{ opacity: visible ? 1 : 0, transition: `opacity 0.3s ease ${delay + 380}ms` }}
+      />
     </g>
   );
 }
 
-// ── Leaf ─────────────────────────────────────────────────────────────────────
-function Leaf({ cx, cy, angle, color, scale = 1, delay = 0, animating }) {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    if (!animating) { setShow(false); return; }
-    const t = setTimeout(() => setShow(true), delay);
-    return () => clearTimeout(t);
-  }, [animating, delay]);
+// ── Canvas confetti — petals fall from top ────────────────────────────────────
+function ConfettiCanvas({ colors, active }) {
+  const canvasRef = useRef(null);
+  const animRef   = useRef(null);
+  const petalsRef = useRef([]);
 
-  const rad = (angle * Math.PI) / 180;
-  const dist = 58 * scale;
-  const lx = cx + dist * Math.cos(rad);
-  const ly = cy + dist * Math.sin(rad);
+  useEffect(() => {
+    if (!active) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Spawn petals
+    petalsRef.current = Array.from({ length: 38 }, (_, i) => ({
+      x:       Math.random() * canvas.width,
+      y:       -20 - Math.random() * 200,
+      vx:      (Math.random() - 0.5) * 1.8,
+      vy:      1.4 + Math.random() * 2.2,
+      rot:     Math.random() * 360,
+      vrot:    (Math.random() - 0.5) * 4,
+      w:       8 + Math.random() * 10,
+      h:       12 + Math.random() * 14,
+      color:   colors[Math.floor(Math.random() * colors.length)],
+      opacity: 0.7 + Math.random() * 0.3,
+      delay:   i * 80,
+      born:    false,
+    }));
+
+    let start = null;
+    function draw(ts) {
+      if (!start) start = ts;
+      const elapsed = ts - start;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      petalsRef.current.forEach(p => {
+        if (elapsed < p.delay) return;
+        if (!p.born) p.born = true;
+
+        p.x   += p.vx;
+        p.y   += p.vy;
+        p.rot += p.vrot;
+        // gentle sway
+        p.vx += Math.sin(elapsed * 0.001 + p.y * 0.01) * 0.04;
+
+        ctx.save();
+        ctx.globalAlpha = p.opacity * Math.max(0, 1 - (p.y - canvas.height * 0.7) / (canvas.height * 0.3));
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.fillStyle = p.color;
+        // Draw teardrop petal
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-p.w * 0.5, -p.h * 0.2, -p.w * 0.55, -p.h * 0.75, 0, -p.h);
+        ctx.bezierCurveTo(p.w * 0.55, -p.h * 0.75, p.w * 0.5, -p.h * 0.2, 0, 0);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Remove petals that fell off screen
+      petalsRef.current = petalsRef.current.filter(p => p.y < canvas.height + 40);
+
+      if (petalsRef.current.length > 0) {
+        animRef.current = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    animRef.current = requestAnimationFrame(draw);
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [active, colors]);
 
   return (
-    <ellipse
-      cx={lx} cy={ly}
-      rx={10 * scale} ry={18 * scale}
-      fill={color}
-      opacity={0.7}
-      transform={`rotate(${angle + 90}, ${lx}, ${ly})`}
+    <canvas
+      ref={canvasRef}
       style={{
-        opacity: show ? 0.7 : 0,
-        transition: `opacity 0.5s ease ${delay}ms`,
+        position: 'absolute', inset: 0,
+        pointerEvents: 'none', zIndex: 1,
       }}
     />
   );
 }
 
-// ── Single illustrated flower ─────────────────────────────────────────────────
-function IllustratedFlower({ type = 'lilac', cx = 160, cy = 200, animating = false }) {
-  const f = FLOWERS[type];
-  const s = f.size;
-  const numPetals = type === 'bougainvillea' ? 6 : type === 'peony' ? 10 : 8;
-  const angleStep = 360 / numPetals;
-
-  // Peony has two rings of petals
-  const petalRings = type === 'peony'
-    ? [
-        { count: 6, distMult: 1,    sizeScale: 1,    delayBase: 0 },
-        { count: 6, distMult: 0.65, sizeScale: 0.75, delayBase: 100 },
-      ]
-    : [{ count: numPetals, distMult: 1, sizeScale: 1, delayBase: 0 }];
-
-  return (
-    <g>
-      {/* Stem */}
-      <line
-        x1={cx} y1={cy + 28 * s} x2={cx} y2={cy + 70 * s}
-        stroke={f.leafColor} strokeWidth={3 * s} strokeLinecap="round"
-        style={{ opacity: animating ? 0.7 : 0, transition: 'opacity 0.5s ease 600ms' }}
-      />
-      {/* Leaves */}
-      <Leaf cx={cx} cy={cy + 50 * s} angle={-30} color={f.leafColor} scale={s} delay={650} animating={animating} />
-      <Leaf cx={cx} cy={cy + 55 * s} angle={210} color={f.leafColor} scale={s * 0.85} delay={700} animating={animating} />
-
-      {/* Petals — all rings */}
-      {petalRings.map((ring, ri) =>
-        Array.from({ length: ring.count }, (_, i) => (
-          <Petal
-            key={`r${ri}p${i}`}
-            cx={cx} cy={cy}
-            angle={i * (360 / ring.count) + (ri * (180 / ring.count))}
-            color={f.petalColor}
-            darkColor={f.petalDark}
-            scale={s * ring.sizeScale * ring.distMult}
-            delay={ring.delayBase + i * 60}
-            animating={animating}
-          />
-        ))
-      )}
-
-      {/* Center */}
-      <circle
-        cx={cx} cy={cy} r={14 * s}
-        fill={f.centerColor}
-        stroke={f.petalDark} strokeWidth={1.5}
-        style={{ opacity: animating ? 1 : 0, transition: 'opacity 0.3s ease 400ms' }}
-      />
-      <circle
-        cx={cx} cy={cy} r={6 * s}
-        fill={f.centerDot}
-        style={{ opacity: animating ? 1 : 0, transition: 'opacity 0.3s ease 500ms' }}
-      />
-      {/* Center dots */}
-      {[0, 60, 120, 180, 240, 300].map((a, i) => {
-        const ar = (a * Math.PI) / 180;
-        return (
-          <circle
-            key={i}
-            cx={cx + 9 * s * Math.cos(ar)} cy={cy + 9 * s * Math.sin(ar)}
-            r={2 * s}
-            fill={f.centerDot} opacity={0.5}
-            style={{ opacity: animating ? 0.5 : 0, transition: `opacity 0.3s ease ${520 + i * 30}ms` }}
-          />
-        );
-      })}
-    </g>
-  );
-}
-
-// ── Floating petals (background) ─────────────────────────────────────────────
-function FloatingPetal({ color, startX, delay, animating }) {
-  return (
-    <div style={{
-      position: 'absolute',
-      left: `${startX}%`,
-      top: '-20px',
-      width: '12px', height: '16px',
-      background: color,
-      borderRadius: '50% 50% 50% 0',
-      opacity: animating ? 0.6 : 0,
-      transform: 'rotate(-45deg)',
-      animation: animating ? `floatDown 3s ease-in ${delay}ms forwards` : 'none',
-    }} />
-  );
-}
-
-// ── Main CelebrationModal ────────────────────────────────────────────────────
+// ── Main component ────────────────────────────────────────────────────────────
 export default function FlowerCelebration({ type, text, message, migraineMode, onClose }) {
-  const [animating, setAnimating] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const f = FLOWERS[type] || FLOWERS.lilac;
 
   useEffect(() => {
-    // Small delay before starting animation so React renders first
-    const t = setTimeout(() => setAnimating(true), 80);
+    const t = setTimeout(() => setVisible(true), 60);
     return () => clearTimeout(t);
   }, []);
 
-  const f = FLOWERS[type] || FLOWERS.lilac;
-  const floatingColors = [f.petalColor, f.petalDark, f.centerColor];
-
-  // ── Migraine mode: text banner only ─────────────────────────────────────
+  // ── Migraine mode: iPhone-tinted text card, no animation ──────────────────
   if (migraineMode) {
     return (
       <div
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0,
-          background: 'rgba(61,46,30,0.7)',
+          background: 'rgba(80,30,10,0.55)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 1000, padding: 'var(--space-6)',
-          cursor: 'pointer',
+          zIndex: 1000, padding: '24px', cursor: 'pointer',
         }}
       >
-        <div
-          onClick={e => e.stopPropagation()}
-          style={{
-            background: 'var(--cream)', borderRadius: 'var(--radius-xl)',
-            padding: 'var(--space-10)', maxWidth: '380px', width: '100%',
-            textAlign: 'center', boxShadow: 'var(--shadow-lg)',
-          }}
-        >
-          <h2 style={{
-            fontFamily: 'var(--font-display)', fontSize: '1.75rem',
-            color: 'var(--ink)', marginBottom: 'var(--space-4)',
-          }}>
-            🎉 {text}
+        <div onClick={e => e.stopPropagation()} style={{
+          background: 'var(--cream)', borderRadius: '28px',
+          padding: '48px 40px', maxWidth: '360px', width: '100%',
+          textAlign: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+        }}>
+          <div style={{ fontSize: '2.5rem', marginBottom: '16px' }}>🌸</div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--ink)', marginBottom: '12px' }}>
+            {text}
           </h2>
           {message && (
-            <p style={{ color: 'var(--ink-light)', lineHeight: 1.7, marginBottom: 'var(--space-4)' }}>
+            <p style={{ color: 'var(--ink-light)', lineHeight: 1.7, marginBottom: '12px', fontSize: '0.9375rem' }}>
               {message}
             </p>
           )}
-          <p style={{
-            fontSize: '0.75rem', color: 'var(--bark)',
-            marginBottom: 'var(--space-6)', fontStyle: 'italic',
-          }}>
-            (Flower animation disabled in migraine mode)
+          <p style={{ fontSize: '0.72rem', color: 'var(--bark)', marginBottom: '24px', fontStyle: 'italic' }}>
+            (Animation off in migraine mode)
           </p>
-          <button className="btn-primary" onClick={onClose}>Continue</button>
+          <button className="btn-primary" onClick={onClose}>Keep going →</button>
         </div>
       </div>
     );
   }
 
-  // ── Normal mode: illustrated flower animation ────────────────────────────
-  const isLarge = type === 'bougainvillea';
-  const numFlowers = isLarge ? 3 : type === 'peony' ? 2 : 1;
+  // ── Normal mode ────────────────────────────────────────────────────────────
+  const count   = f.count;
+  // Lay out flowers in a row — compute positions inside a fixed viewBox
+  const vbW     = count === 1 ? 280 : count === 2 ? 420 : 560;
+  const vbH     = 220;
+  const spacing = vbW / count;
+  const flowerPositions = Array.from({ length: count }, (_, i) => ({
+    x: spacing * 0.5 + i * spacing,
+    y: 95,
+    size: count === 1 ? 1.1 : count === 2 ? 0.92 : 0.8,
+    delay: i * 120,
+  }));
 
   return (
     <>
       <style>{`
-        @keyframes floatDown {
-          0%   { transform: rotate(-45deg) translateY(0);   opacity: 0.6; }
-          100% { transform: rotate(-45deg) translateY(110vh); opacity: 0; }
-        }
         @keyframes bgFadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-        @keyframes cardSlideUp {
-          from { opacity: 0; transform: translateY(40px) scale(0.95); }
+        @keyframes cardPop {
+          from { opacity: 0; transform: translateY(32px) scale(0.94); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes shimmer {
-          0%, 100% { opacity: 0.4; }
-          50%       { opacity: 1; }
+        @keyframes gentlePulse {
+          0%, 100% { transform: scale(1); }
+          50%       { transform: scale(1.015); }
         }
       `}</style>
+
       <div
         onClick={onClose}
         style={{
           position: 'fixed', inset: 0,
-          background: 'rgba(44,40,37,0.6)',
+          background: 'rgba(44,40,37,0.55)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 1000, padding: 'var(--space-6)',
-          cursor: 'pointer',
-          animation: 'bgFadeIn 0.3s ease forwards',
+          zIndex: 1000, padding: '20px', cursor: 'pointer',
+          animation: 'bgFadeIn 0.35s ease forwards',
           overflow: 'hidden',
         }}
       >
-        {/* Floating petals background */}
-        {Array.from({ length: 14 }, (_, i) => (
-          <FloatingPetal
-            key={i}
-            color={floatingColors[i % floatingColors.length]}
-            startX={Math.random() * 100}
-            delay={i * 180}
-            animating={animating}
-          />
-        ))}
+        {/* Canvas confetti */}
+        <ConfettiCanvas colors={f.confettiColors} active={visible} />
 
+        {/* Card */}
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            background: 'var(--white)', borderRadius: 'var(--radius-xl)',
-            padding: `var(--space-8) var(--space-8) var(--space-10)`,
-            maxWidth: isLarge ? '480px' : '380px', width: '100%',
-            textAlign: 'center', boxShadow: 'var(--shadow-lg)',
-            animation: 'cardSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards',
-            position: 'relative', cursor: 'default',
+            position: 'relative', zIndex: 2,
+            background: 'var(--white)',
+            borderRadius: '28px',
+            padding: '32px 40px 40px',
+            maxWidth: count >= 3 ? '520px' : '400px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 16px 64px rgba(44,40,37,0.22), 0 4px 16px rgba(44,40,37,0.1)',
+            animation: 'cardPop 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards',
+            cursor: 'default',
           }}
         >
-          {/* SVG flower(s) */}
-          <svg
-            width="100%" viewBox={isLarge ? "0 0 400 240" : numFlowers === 2 ? "0 0 340 220" : "0 0 320 210"}
-            style={{ overflow: 'visible', marginBottom: 'var(--space-2)' }}
-          >
-            {numFlowers === 1 && <IllustratedFlower type={type} cx={160} cy={120} animating={animating} />}
-            {numFlowers === 2 && (
-              <>
-                <IllustratedFlower type={type} cx={110} cy={115} animating={animating} />
-                <IllustratedFlower type={type} cx={230} cy={110} animating={animating} />
-              </>
-            )}
-            {numFlowers === 3 && (
-              <>
-                <IllustratedFlower type={type} cx={80}  cy={130} animating={animating} />
-                <IllustratedFlower type={type} cx={200} cy={110} animating={animating} />
-                <IllustratedFlower type={type} cx={320} cy={130} animating={animating} />
-              </>
-            )}
-          </svg>
+          {/* Type label */}
+          <p style={{
+            fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.12em',
+            textTransform: 'uppercase', color: f.petalColor,
+            marginBottom: '12px',
+          }}>
+            {f.label}
+          </p>
+
+          {/* SVG flowers */}
+          <div style={{ animation: 'gentlePulse 3s ease 1s infinite' }}>
+            <svg
+              viewBox={`0 0 ${vbW} ${vbH}`}
+              width="100%" height="auto"
+              style={{ overflow: 'visible', display: 'block', marginBottom: '8px' }}
+            >
+              {flowerPositions.map((pos, i) => (
+                <Flower
+                  key={i}
+                  type={type}
+                  x={pos.x} y={pos.y}
+                  size={pos.size}
+                  delay={pos.delay}
+                  visible={visible}
+                />
+              ))}
+            </svg>
+          </div>
 
           {/* Text */}
           <h2 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: isLarge ? '2rem' : '1.75rem',
-            color: 'var(--ink)', marginBottom: 'var(--space-3)',
-            letterSpacing: '-0.02em',
+            fontSize: count >= 3 ? '1.85rem' : '1.65rem',
+            color: 'var(--ink)',
+            marginBottom: '10px',
+            letterSpacing: '-0.01em',
+            lineHeight: 1.2,
           }}>
             {text}
           </h2>
           {message && (
             <p style={{
               color: 'var(--ink-light)', lineHeight: 1.7,
-              fontSize: '0.9375rem', marginBottom: 'var(--space-6)',
-              maxWidth: '300px', margin: '0 auto var(--space-6)',
+              fontSize: '0.9rem',
+              maxWidth: '320px', margin: '0 auto 24px',
             }}>
               {message}
             </p>
           )}
 
-          <button className="btn-primary" onClick={onClose} style={{ marginTop: 'var(--space-4)' }}>
+          <button
+            className="btn-primary"
+            onClick={onClose}
+            style={{ marginBottom: '12px' }}
+          >
             Keep going →
           </button>
-
-          <p style={{
-            fontSize: '0.75rem', color: 'var(--bark-light)',
-            marginTop: 'var(--space-4)',
-            animation: 'shimmer 2s ease 1.5s infinite',
-          }}>
-            Tap anywhere to close
+          <p style={{ fontSize: '0.72rem', color: 'var(--bark-light)', marginTop: '4px' }}>
+            tap anywhere to close
           </p>
         </div>
       </div>
