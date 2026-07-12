@@ -236,12 +236,12 @@ function BougainvilleaFlower({ r }) {
 
   // Main stem from bottom-center, branching into two
   // Left flower center: (128, 88), Right flower center: (208, 72)
-  const lc = { x:128, y:88 };
-  const rc = { x:208, y:72 };
+  const lc = { x:118, y:88 };
+  const rc = { x:198, y:72 };
   const branchY = 155;
 
   return (
-    <svg viewBox="0 0 340 235" width="100%" style={{ overflow:'visible', display:'block' }}>
+    <svg viewBox="-10 0 380 235" width="100%" style={{ overflow:'visible', display:'block' }}>
       {/* Main stem */}
       <path d={`M 168 228 C 168 210, 162 190, 158 ${branchY}`}
         fill="none" stroke="#3A7830" strokeWidth="6" strokeLinecap="round"
@@ -489,7 +489,7 @@ export default function FlowerCelebration({ type, text, message, migraineMode, o
             background:'var(--white)',
             borderRadius:'24px',
             padding:'28px 32px 36px',
-            maxWidth: type==='bougainvillea' ? '500px' : '400px',
+            maxWidth: type==='bougainvillea' ? '480px' : '380px',
             width:'100%',
             textAlign:'center',
             boxShadow:'0 20px 60px rgba(44,40,37,0.22), 0 4px 16px rgba(44,40,37,0.1)',

@@ -66,22 +66,26 @@
 }
 
 /* ── Migraine Mode ── */
-/* Replicates iPhone "Color Filters → Color Tint" at max red/intensity.
-   The screen stays at NORMAL brightness and full contrast — fully readable.
-   Everything just shifts toward warm red/amber, eliminating blue and green light.
-   This is a filter overlay, not a dark mode. */
+/* Replicates iPhone "Color Tint" at max red intensity.
+   A red semi-transparent overlay sits on top of everything via ::before,
+   using mix-blend-mode: multiply — which is exactly how Apple implements it.
+   Result: whites become pink-red, all blue/green light is suppressed.
+   The UI stays at normal brightness and is fully readable. */
 body.migraine-mode {
-  /* Warm up surfaces slightly so they tint redder under the filter */
-  --cream:      #FFF4E8;
-  --cream-dark: #FFE8D0;
-  --white:      #FFFAF2;
-  /* filter: sepia converts to warm brown first, then hue-rotate(320deg)
-     shifts that brown into red. saturate(3) makes it vivid like iPhone's full-intensity tint.
-     This keeps whites as pink-red, blues become red, greens become orange — all readable. */
-  filter: sepia(1) saturate(3) hue-rotate(320deg);
+  position: relative;
 }
 
-/* Kill animations in migraine mode */
+body.migraine-mode::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 60, 0, 0.55);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* Kill animations */
 body.migraine-mode *,
 body.migraine-mode *::before,
 body.migraine-mode *::after {
