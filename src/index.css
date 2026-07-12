@@ -1,0 +1,358 @@
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  /* Core palette */
+  --cream:           #FAF8F5;
+  --cream-dark:      #F2EDE6;
+  --ink:             #2C2825;
+  --ink-light:       #4A4440;
+  --bark:            #8C7B6E;
+  --bark-light:      #BAB0A8;
+
+  /* Flower palette */
+  --lilac:           #B8A9D4;
+  --lilac-light:     #EAE5F5;
+  --lilac-dark:      #8B77BB;
+  --peony:           #E8A0B0;
+  --peony-light:     #FAEEF1;
+  --peony-dark:      #C4607A;
+  --bougainvillea:   #D4607A;
+  --bougainvillea-light: #FAE8ED;
+  --bougainvillea-dark:  #A83D56;
+
+  /* Track accents */
+  --sage:            #7FA882;
+  --sage-light:      #E8F3E9;
+  --gold:            #C8961E;
+  --gold-light:      #FDF3DC;
+  --purple:          #9B7EC8;
+  --purple-light:    #EFE9F8;
+  --teal:            #5A9EA8;
+  --teal-light:      #E3F3F5;
+
+  /* UI */
+  --white:           #FFFFFF;
+  --border:          #E8E2DA;
+  --border-strong:   #D4CCC2;
+  --shadow-sm:       0 1px 3px rgba(44,40,37,0.06), 0 1px 2px rgba(44,40,37,0.04);
+  --shadow-md:       0 4px 12px rgba(44,40,37,0.08), 0 2px 4px rgba(44,40,37,0.04);
+  --shadow-lg:       0 8px 32px rgba(44,40,37,0.12), 0 4px 8px rgba(44,40,37,0.06);
+  --radius-sm:       8px;
+  --radius-md:       14px;
+  --radius-lg:       20px;
+  --radius-xl:       28px;
+
+  /* Typography */
+  --font-display:    'Lora', Georgia, serif;
+  --font-body:       'Inter', -apple-system, sans-serif;
+
+  /* Spacing scale */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Nav */
+  --nav-height: 64px;
+  --bottom-nav-height: 72px;
+}
+
+/* ── Migraine Mode ── */
+body.migraine-mode {
+  --cream:           #FFF8ED;
+  --cream-dark:      #F5EDD8;
+  --ink:             #3D2E1E;
+  --ink-light:       #5C4433;
+  --bark:            #9E7B5A;
+  --white:           #FFFBF2;
+  --border:          #E8D8BE;
+  --lilac:           #C4A882;
+  --lilac-light:     #F5EDD8;
+  --peony:           #D4A070;
+  --peony-light:     #FAF0E0;
+  --bougainvillea:   #C48060;
+  --bougainvillea-light: #FAE8DC;
+  --sage:            #8A9E70;
+  --sage-light:      #EAF0DC;
+  --gold:            #B89040;
+  --teal:            #7A9890;
+  filter: sepia(20%) saturate(85%);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Typography scale ── */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+h4, .h4 {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+p {
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--ink-light);
+}
+
+/* ── Links ── */
+a {
+  color: var(--bougainvillea);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ── Buttons ── */
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  outline: none;
+  background: none;
+  transition: all 0.18s ease;
+}
+
+.btn-primary {
+  background: var(--bougainvillea);
+  color: var(--white);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-xl);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+}
+.btn-primary:hover {
+  background: var(--bougainvillea-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--cream-dark);
+  color: var(--ink);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-xl);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  background: var(--border);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  color: var(--bark);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+}
+.btn-ghost:hover {
+  background: var(--cream-dark);
+  color: var(--ink);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+}
+
+.card-hover {
+  transition: all 0.18s ease;
+}
+.card-hover:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+/* ── Progress bar ── */
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cream-dark);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  background: linear-gradient(90deg, var(--bougainvillea), var(--peony));
+}
+
+/* ── Tags / Pills ── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 3px var(--space-3);
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-body);
+}
+
+/* Track color pills */
+.pill-a { background: var(--sage-light); color: var(--sage); }
+.pill-b { background: var(--lilac-light); color: var(--lilac-dark); }
+.pill-c { background: var(--gold-light); color: var(--gold); }
+.pill-d { background: var(--teal-light); color: var(--teal); }
+.pill-e { background: var(--purple-light); color: var(--purple); }
+.pill-f { background: var(--bougainvillea-light); color: var(--bougainvillea-dark); }
+
+/* ── Checkbox ── */
+.checkbox-custom {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--border-strong);
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.checkbox-custom.checked {
+  background: var(--bougainvillea);
+  border-color: var(--bougainvillea);
+}
+.checkbox-custom.checked::after {
+  content: '';
+  width: 11px;
+  height: 7px;
+  border-left: 2px solid white;
+  border-bottom: 2px solid white;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-4) 0;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bark-light); border-radius: 99px; }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.animate-fadeIn  { animation: fadeIn  0.3s ease forwards; }
+.animate-slideUp { animation: slideUp 0.4s ease forwards; }
+.animate-scaleIn { animation: scaleIn 0.25s ease forwards; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Utility ── */
+.text-sm    { font-size: 0.8125rem; }
+.text-xs    { font-size: 0.75rem; }
+.text-bark  { color: var(--bark); }
+.text-ink   { color: var(--ink); }
+.text-bougainvillea { color: var(--bougainvillea); }
+.font-display { font-family: var(--font-display); }
+.font-medium  { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
