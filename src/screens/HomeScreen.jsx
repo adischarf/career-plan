@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import FlowerCelebration from '../components/FlowerCelebration';
 import {
   MONTHS, PHASES, TRACKS,
   getTasksForMonth,
@@ -97,8 +96,6 @@ function ProgressBar({ pct, color = 'linear-gradient(90deg, var(--bougainvillea)
 export default function HomeScreen({ storage, onOpenProgress }) {
   const { data } = storage;
   const [expandFocus, setExpandFocus] = useState(false);
-  const [testCelebration, setTestCelebration] = useState(null);
-
   const currentMonth = MONTHS.find(m => m.id === data.currentMonthId) || MONTHS[0];
   const currentPhase = PHASES.find(p => p.months.includes(currentMonth.id));
   const monthTasks   = getTasksForMonth(currentMonth.id);
@@ -371,50 +368,8 @@ export default function HomeScreen({ storage, onOpenProgress }) {
 
       <div style={{ height: 'var(--space-8)' }} />
 
-      {/* ── Dev: Animation test (remove before giving to user) ── */}
-      <div style={{
-        margin: 'var(--space-4) 0',
-        background: 'var(--cream-dark)',
-        borderRadius: 'var(--radius-md)',
-        padding: 'var(--space-4)',
-        border: '1px dashed var(--border-strong)',
-      }}>
-        <p style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--bark)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 'var(--space-3)' }}>
-          🔬 Animation test (dev only)
-        </p>
-        <div style={{ display: 'flex', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
-          {[
-            { label: '🌸 Lilac (Month)', type: 'lilac', text: 'Month 1 Complete!', message: 'You started. That is the hardest part, and you did it.' },
-            { label: '🌺 Peony (Track)', type: 'peony', text: 'Track A Complete!', message: 'Every task in Psychological & Momentum is done. All of it.' },
-            { label: '🌸 Bougainvillea (Phase)', type: 'bougainvillea', text: 'Phase 1 Complete!', message: 'Six months of showing up for yourself. The foundation is built.' },
-          ].map(({ label, type, text, message }) => (
-            <button
-              key={type}
-              onClick={() => setTestCelebration({ type, text, message })}
-              style={{
-                background: 'var(--white)', border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-xl)', padding: '6px 14px',
-                fontSize: '0.8rem', cursor: 'pointer', fontFamily: 'var(--font-body)',
-                color: 'var(--ink)',
-              }}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div style={{ height: 'var(--space-8)' }} />
 
-      {testCelebration && (
-        <FlowerCelebration
-          type={testCelebration.type}
-          text={testCelebration.text}
-          message={testCelebration.message}
-          migraineMode={false}
-          onClose={() => setTestCelebration(null)}
-        />
-      )}
     </div>
   );
 }
