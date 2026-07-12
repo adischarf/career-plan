@@ -242,10 +242,6 @@ function BougainvilleaFlower({ r }) {
   const rBase = { x: 216, y: 103 };
   const bH = 58; // bract height
   const bW = 28; // bract width
-  // The 3 florets sit roughly 2/3 up the bract cluster
-  const lTop = { x: lBase.x, y: lBase.y - bH * 0.62 };
-  const rTop = { x: rBase.x, y: rBase.y - bH * 0.62 };
-
   // Wide heart-shaped bract path growing from (bx,by) at angleDeg
   function bracPath(bx, by, angle, w, h) {
     const a = angle * Math.PI / 180;
@@ -354,8 +350,8 @@ function BougainvilleaFlower({ r }) {
       ))}
 
       {/* ── TRUE FLOWER FLORETS — tiny white tubes at top of each cluster ── */}
-      <TrueFlower tx={lTop.x} ty={lTop.y} show={rev.has('lf')} />
-      <TrueFlower tx={rTop.x} ty={rTop.y} show={rev.has('rf')} />
+      <TrueFlower tx={lBase.x} ty={lBase.y} show={rev.has('lf')} />
+      <TrueFlower tx={rBase.x} ty={rBase.y} show={rev.has('rf')} />
     </svg>
   );
 }
