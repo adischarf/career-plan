@@ -210,160 +210,168 @@ function PeonyFlower({ r }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// BOUGAINVILLEA — two flowers on branching stem, papery bracts, tiny true flower
-// Branch tips are the exact bases of the flowers — fully connected
+// BOUGAINVILLEA — two full flowers on branching stem
+// Each flower: 5 wide rounded bracts (like the reference image), tiny true flower center
+// Bracts are generous, overlapping, heart-shaped — not narrow
 // ═══════════════════════════════════════════════════════════════════════════════
 function BougainvilleaFlower({ r }) {
   const steps = [
     { key: 'stem',    delay: 80  },
     { key: 'branch1', delay: 350 },
-    { key: 'branch2', delay: 450 },
-    { key: 'leaf1',   delay: 520 },
-    { key: 'leaf2',   delay: 620 },
-    { key: 'leaf3',   delay: 700 },
-    { key: 'b1p3', delay: 820  },
-    { key: 'b1p1', delay: 900  },
-    { key: 'b1p2', delay: 980  },
-    { key: 'b2p3', delay: 920  },
-    { key: 'b2p1', delay: 1000 },
-    { key: 'b2p2', delay: 1080 },
-    { key: 'tc1',  delay: 1250 },
-    { key: 'tc2',  delay: 1320 },
+    { key: 'branch2', delay: 430 },
+    { key: 'leaf1',   delay: 500 },
+    { key: 'leaf2',   delay: 600 },
+    { key: 'leaf3',   delay: 670 },
+    // Left flower bracts — open one by one
+    { key: 'l0', delay: 780  },
+    { key: 'l1', delay: 870  },
+    { key: 'l2', delay: 950  },
+    { key: 'l3', delay: 1030 },
+    { key: 'l4', delay: 1110 },
+    // Right flower bracts
+    { key: 'r0', delay: 860  },
+    { key: 'r1', delay: 950  },
+    { key: 'r2', delay: 1030 },
+    { key: 'r3', delay: 1110 },
+    { key: 'r4', delay: 1190 },
+    // True flower centers
+    { key: 'tc1', delay: 1280 },
+    { key: 'tc2', delay: 1340 },
   ];
   const rev = useTiming(steps, r);
 
-  // Viewbox: 320 x 230. Main stem rises from bottom-center (160, 228).
-  // It forks at (155, 148). Left branch ends at (95, 95). Right branch ends at (220, 85).
-  // Flower centers sit exactly at the branch tips.
-  const fork = { x: 155, y: 148 };
-  const lc   = { x: 95,  y: 95  };   // left flower base (where branch tip meets flower)
-  const rc   = { x: 218, y: 85  };   // right flower base
+  const fork = { x: 158, y: 150 };
+  const lc   = { x: 100, y: 92  };
+  const rc   = { x: 220, y: 82  };
+
+  // Draw one wide rounded bract.
+  // `base` = the point it grows from (flower center)
+  // `angle` = direction it points (degrees, 0=right)
+  // `w` = width, `h` = length
+  // Returns SVG path string for a wide teardrop/heart shape
+  function bracPath(bx, by, angleDeg, w, h) {
+    const a = angleDeg * Math.PI / 180;
+    // Tip of the bract
+    const tx = bx + h * Math.cos(a);
+    const ty = by + h * Math.sin(a);
+    // Control points for wide rounded sides
+    const perp = (angleDeg + 90) * Math.PI / 180;
+    const c1x = bx + (h * 0.35) * Math.cos(a) + w * 0.55 * Math.cos(perp);
+    const c1y = by + (h * 0.35) * Math.sin(a) + w * 0.55 * Math.sin(perp);
+    const c2x = bx + (h * 0.75) * Math.cos(a) + w * 0.48 * Math.cos(perp);
+    const c2y = by + (h * 0.75) * Math.sin(a) + w * 0.48 * Math.sin(perp);
+    const c3x = bx + (h * 0.35) * Math.cos(a) - w * 0.55 * Math.cos(perp);
+    const c3y = by + (h * 0.35) * Math.sin(a) - w * 0.55 * Math.sin(perp);
+    const c4x = bx + (h * 0.75) * Math.cos(a) - w * 0.48 * Math.cos(perp);
+    const c4y = by + (h * 0.75) * Math.sin(a) - w * 0.48 * Math.sin(perp);
+    return `M ${bx} ${by} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${tx} ${ty} C ${c4x} ${c4y}, ${c3x} ${c3y}, ${bx} ${by} Z`;
+  }
+
+  // Vein line down the center of a bract
+  function veinPath(bx, by, angleDeg, h) {
+    const a = angleDeg * Math.PI / 180;
+    return `M ${bx} ${by} Q ${bx + h*0.5*Math.cos(a)} ${by + h*0.5*Math.sin(a)}, ${bx + h*0.85*Math.cos(a)} ${by + h*0.85*Math.sin(a)}`;
+  }
+
+  // 5 bracts per flower, spread in a fan: angles from -100° to -260° (pointing up and out)
+  // Left flower points mostly upward-left, right flower upward-right
+  const leftAngles  = [-130, -90, -50, -160, -20];
+  const rightAngles = [-130, -90, -50, -160, -20];
+  const leftKeys    = ['l0','l1','l2','l3','l4'];
+  const rightKeys   = ['r0','r1','r2','r3','r4'];
+  const leftColors  = ['#E060A0','#F090BE','#D84E90','#F0A0C8','#E870AA'];
+  const rightColors = ['#EE72AC','#F898C0','#DC5898','#F8A8CC','#E878B4'];
 
   return (
     <svg viewBox="20 0 300 235" width="100%" style={{ overflow:'visible', display:'block' }}>
-      {/* Main stem — rises from bottom to fork */}
-      <path d={`M 160 228 C 160 210, 157 188, ${fork.x} ${fork.y}`}
+      {/* Main stem */}
+      <path d={`M 160 228 C 160 210, 158 188, ${fork.x} ${fork.y}`}
         fill="none" stroke="#3A7830" strokeWidth="6" strokeLinecap="round"
         style={grow(rev.has('stem'), 80, '160px 228px')}
       />
-      {/* Left branch — from fork to left flower base */}
-      <path d={`M ${fork.x} ${fork.y} C ${fork.x-20} ${fork.y-25}, ${lc.x+20} ${lc.y+30}, ${lc.x} ${lc.y}`}
+      {/* Left branch */}
+      <path d={`M ${fork.x} ${fork.y} C ${fork.x-18} ${fork.y-24}, ${lc.x+22} ${lc.y+30}, ${lc.x} ${lc.y}`}
         fill="none" stroke="#4A8C3A" strokeWidth="4.5" strokeLinecap="round"
         style={fadeIn(rev.has('branch1'), 350)}
       />
-      {/* Right branch — from fork to right flower base */}
-      <path d={`M ${fork.x} ${fork.y} C ${fork.x+22} ${fork.y-22}, ${rc.x-25} ${rc.y+28}, ${rc.x} ${rc.y}`}
+      {/* Right branch */}
+      <path d={`M ${fork.x} ${fork.y} C ${fork.x+24} ${fork.y-20}, ${rc.x-28} ${rc.y+26}, ${rc.x} ${rc.y}`}
         fill="none" stroke="#4A8C3A" strokeWidth="4" strokeLinecap="round"
-        style={fadeIn(rev.has('branch2'), 450)}
+        style={fadeIn(rev.has('branch2'), 430)}
       />
 
-      {/* Leaves on main stem */}
-      <g style={bloom(rev.has('leaf1'), 0, 132, 188)}>
-        <path d={`M 155 183 C 143 169, 108 173, 115 194 C 121 212, 149 200, 155 183 Z`} fill="#3A8C38"/>
-        <path d={`M 155 183 C 141 186, 122 193, 115 194`} fill="none" stroke="#2A6828" strokeWidth="1.4" opacity="0.6"/>
-        <path d={`M 135 178 C 130 184, 124 192, 122 198`} fill="none" stroke="#2A6828" strokeWidth="0.9" opacity="0.4"/>
+      {/* Leaves */}
+      <g style={bloom(rev.has('leaf1'), 0, 130, 190)}>
+        <path d={`M 157 185 C 144 170, 108 174, 115 196 C 122 214, 150 202, 157 185 Z`} fill="#3A8C38"/>
+        <path d={`M 157 185 C 142 188, 122 195, 115 196`} fill="none" stroke="#2A6828" strokeWidth="1.4" opacity="0.6"/>
+        <path d={`M 136 180 C 130 187, 124 194, 122 200`} fill="none" stroke="#2A6828" strokeWidth="0.9" opacity="0.4"/>
       </g>
-      <g style={bloom(rev.has('leaf2'), 0, 178, 170)}>
-        <path d={`M 158 167 C 168 154, 200 156, 193 175 C 186 192, 162 180, 158 167 Z`} fill="#46A040"/>
-        <path d={`M 158 167 C 170 169, 185 174, 193 175`} fill="none" stroke="#2A6828" strokeWidth="1.3" opacity="0.6"/>
+      <g style={bloom(rev.has('leaf2'), 0, 180, 170)}>
+        <path d={`M 160 168 C 170 154, 202 157, 195 176 C 188 193, 163 181, 160 168 Z`} fill="#46A040"/>
+        <path d={`M 160 168 C 172 170, 187 175, 195 176`} fill="none" stroke="#2A6828" strokeWidth="1.3" opacity="0.55"/>
       </g>
-      <g style={bloom(rev.has('leaf3'), 0, fork.x-14, fork.y+12)}>
-        <path d={`M ${fork.x} ${fork.y+5} C ${fork.x-8} ${fork.y-6}, ${fork.x-34} ${fork.y-2}, ${fork.x-28} ${fork.y+16} C ${fork.x-22} ${fork.y+32}, ${fork.x-4} ${fork.y+22}, ${fork.x} ${fork.y+5} Z`} fill="#4AAA42"/>
-        <path d={`M ${fork.x} ${fork.y+5} C ${fork.x-12} ${fork.y+8}, ${fork.x-24} ${fork.y+14}, ${fork.x-28} ${fork.y+16}`} fill="none" stroke="#2A6828" strokeWidth="1.1" opacity="0.5"/>
+      <g style={bloom(rev.has('leaf3'), 0, fork.x-16, fork.y+14)}>
+        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-8} ${fork.y-8}, ${fork.x-36} ${fork.y-4}, ${fork.x-30} ${fork.y+18} C ${fork.x-24} ${fork.y+34}, ${fork.x-4} ${fork.y+24}, ${fork.x} ${fork.y+4} Z`} fill="#4AAA42"/>
+        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-14} ${fork.y+8}, ${fork.x-25} ${fork.y+16}, ${fork.x-30} ${fork.y+18}`} fill="none" stroke="#2A6828" strokeWidth="1.1" opacity="0.5"/>
       </g>
 
-      {/* ── LEFT FLOWER — 3 papery bracts opening from lc ── */}
-      {/* Back bract — renders behind the other two */}
-      <g style={bloom(rev.has('b1p3'), 0, lc.x, lc.y - 28)}>
-        <path d={`M ${lc.x} ${lc.y}
-          C ${lc.x - 8} ${lc.y - 12}, ${lc.x - 10} ${lc.y - 40}, ${lc.x} ${lc.y - 56}
-          C ${lc.x + 10} ${lc.y - 40}, ${lc.x + 8} ${lc.y - 12}, ${lc.x} ${lc.y} Z`}
-          fill="#C84888" opacity={0.78}/>
-      </g>
-      {/* Left bract */}
-      <g style={bloom(rev.has('b1p1'), 0, lc.x - 22, lc.y - 22)}>
-        <path d={`M ${lc.x} ${lc.y}
-          C ${lc.x - 14} ${lc.y - 2}, ${lc.x - 44} ${lc.y - 20}, ${lc.x - 38} ${lc.y - 44}
-          C ${lc.x - 28} ${lc.y - 62}, ${lc.x - 8} ${lc.y - 34}, ${lc.x} ${lc.y} Z`}
-          fill="#E068A0" opacity={0.92}/>
-        <path d={`M ${lc.x - 3} ${lc.y - 2} C ${lc.x - 16} ${lc.y - 14}, ${lc.x - 30} ${lc.y - 32}, ${lc.x - 36} ${lc.y - 42}`}
-          fill="none" stroke="#B03870" strokeWidth="1.4" opacity="0.35" strokeLinecap="round"/>
-      </g>
-      {/* Right bract */}
-      <g style={bloom(rev.has('b1p2'), 0, lc.x + 22, lc.y - 22)}>
-        <path d={`M ${lc.x} ${lc.y}
-          C ${lc.x + 14} ${lc.y - 2}, ${lc.x + 42} ${lc.y - 18}, ${lc.x + 36} ${lc.y - 44}
-          C ${lc.x + 26} ${lc.y - 62}, ${lc.x + 8} ${lc.y - 34}, ${lc.x} ${lc.y} Z`}
-          fill="#F090B8" opacity={0.9}/>
-        <path d={`M ${lc.x + 3} ${lc.y - 2} C ${lc.x + 14} ${lc.y - 14}, ${lc.x + 28} ${lc.y - 30}, ${lc.x + 34} ${lc.y - 42}`}
-          fill="none" stroke="#B03870" strokeWidth="1.4" opacity="0.35" strokeLinecap="round"/>
-      </g>
-      {/* True flower center 1 */}
+      {/* ── LEFT FLOWER BRACTS ── */}
+      {leftAngles.map((angle, i) => (
+        <g key={leftKeys[i]} style={bloom(rev.has(leftKeys[i]), 0, lc.x, lc.y)}>
+          <path d={bracPath(lc.x, lc.y, angle, 24, 52)} fill={leftColors[i]} opacity={0.9}/>
+          <path d={veinPath(lc.x, lc.y, angle, 52)}
+            fill="none" stroke={leftColors[i] === '#E060A0' ? '#B03870' : '#C04880'}
+            strokeWidth="1.3" opacity="0.35" strokeLinecap="round"/>
+        </g>
+      ))}
+
+      {/* ── RIGHT FLOWER BRACTS ── */}
+      {rightAngles.map((angle, i) => (
+        <g key={rightKeys[i]} style={bloom(rev.has(rightKeys[i]), 0, rc.x, rc.y)}>
+          <path d={bracPath(rc.x, rc.y, angle, 22, 48)} fill={rightColors[i]} opacity={0.9}/>
+          <path d={veinPath(rc.x, rc.y, angle, 48)}
+            fill="none" stroke="#C04880"
+            strokeWidth="1.2" opacity="0.35" strokeLinecap="round"/>
+        </g>
+      ))}
+
+      {/* ── TRUE FLOWER CENTERS ── */}
       <g style={bloom(rev.has('tc1'), 0, lc.x, lc.y)}>
-        <circle cx={lc.x} cy={lc.y} r={11} fill="#FFF6E8"/>
+        <circle cx={lc.x} cy={lc.y} r={12} fill="#FFF6E8" stroke="#D4A030" strokeWidth="1"/>
         {[0,72,144,216,288].map((a,i) => {
-          const ar = a * Math.PI / 180;
-          return <ellipse key={i}
-            cx={lc.x + 7.5*Math.cos(ar)} cy={lc.y + 7.5*Math.sin(ar)}
-            rx={4} ry={5.5} fill="white"
+          const ar = a * Math.PI/180;
+          return <ellipse key={i} cx={lc.x+7.5*Math.cos(ar)} cy={lc.y+7.5*Math.sin(ar)}
+            rx={3.5} ry={5} fill="white"
             transform={`rotate(${a+90},${lc.x+7.5*Math.cos(ar)},${lc.y+7.5*Math.sin(ar)})`}/>;
         })}
         {[0,45,90,135,180,225,270,315].map((a,i) => {
-          const ar = a*Math.PI/180, r1=3, r2=8.5;
-          return (
-            <g key={i}>
-              <line x1={lc.x+r1*Math.cos(ar)} y1={lc.y+r1*Math.sin(ar)}
-                    x2={lc.x+r2*Math.cos(ar)} y2={lc.y+r2*Math.sin(ar)}
-                stroke="#A06818" strokeWidth="1.1" strokeLinecap="round" opacity={0.85}/>
-              <circle cx={lc.x+r2*Math.cos(ar)} cy={lc.y+r2*Math.sin(ar)} r={1.8} fill="#C88C20"/>
-            </g>
-          );
+          const ar=a*Math.PI/180, r1=3, r2=8.5;
+          return <g key={i}>
+            <line x1={lc.x+r1*Math.cos(ar)} y1={lc.y+r1*Math.sin(ar)}
+                  x2={lc.x+r2*Math.cos(ar)} y2={lc.y+r2*Math.sin(ar)}
+              stroke="#A06818" strokeWidth="1.1" strokeLinecap="round" opacity={0.8}/>
+            <circle cx={lc.x+r2*Math.cos(ar)} cy={lc.y+r2*Math.sin(ar)} r={1.8} fill="#C88C20"/>
+          </g>;
         })}
         <circle cx={lc.x} cy={lc.y} r={3.5} fill="#E0A030"/>
       </g>
 
-      {/* ── RIGHT FLOWER ── */}
-      <g style={bloom(rev.has('b2p3'), 0, rc.x, rc.y - 28)}>
-        <path d={`M ${rc.x} ${rc.y}
-          C ${rc.x - 8} ${rc.y - 12}, ${rc.x - 10} ${rc.y - 38}, ${rc.x} ${rc.y - 54}
-          C ${rc.x + 10} ${rc.y - 38}, ${rc.x + 8} ${rc.y - 12}, ${rc.x} ${rc.y} Z`}
-          fill="#C84888" opacity={0.78}/>
-      </g>
-      <g style={bloom(rev.has('b2p1'), 0, rc.x - 20, rc.y - 20)}>
-        <path d={`M ${rc.x} ${rc.y}
-          C ${rc.x - 13} ${rc.y - 2}, ${rc.x - 42} ${rc.y - 18}, ${rc.x - 36} ${rc.y - 42}
-          C ${rc.x - 26} ${rc.y - 60}, ${rc.x - 8} ${rc.y - 32}, ${rc.x} ${rc.y} Z`}
-          fill="#EE78A8" opacity={0.92}/>
-        <path d={`M ${rc.x - 3} ${rc.y - 2} C ${rc.x - 14} ${rc.y - 14}, ${rc.x - 28} ${rc.y - 30}, ${rc.x - 34} ${rc.y - 40}`}
-          fill="none" stroke="#B03870" strokeWidth="1.3" opacity="0.35" strokeLinecap="round"/>
-      </g>
-      <g style={bloom(rev.has('b2p2'), 0, rc.x + 20, rc.y - 20)}>
-        <path d={`M ${rc.x} ${rc.y}
-          C ${rc.x + 13} ${rc.y - 2}, ${rc.x + 40} ${rc.y - 16}, ${rc.x + 34} ${rc.y - 42}
-          C ${rc.x + 24} ${rc.y - 60}, ${rc.x + 6} ${rc.y - 32}, ${rc.x} ${rc.y} Z`}
-          fill="#F8A0C4" opacity={0.9}/>
-        <path d={`M ${rc.x + 3} ${rc.y - 2} C ${rc.x + 12} ${rc.y - 14}, ${rc.x + 26} ${rc.y - 28}, ${rc.x + 32} ${rc.y - 40}`}
-          fill="none" stroke="#B03870" strokeWidth="1.3" opacity="0.35" strokeLinecap="round"/>
-      </g>
       <g style={bloom(rev.has('tc2'), 0, rc.x, rc.y)}>
-        <circle cx={rc.x} cy={rc.y} r={10} fill="#FFF6E8"/>
+        <circle cx={rc.x} cy={rc.y} r={11} fill="#FFF6E8" stroke="#D4A030" strokeWidth="1"/>
         {[0,72,144,216,288].map((a,i) => {
-          const ar = a * Math.PI / 180;
-          return <ellipse key={i}
-            cx={rc.x + 7*Math.cos(ar)} cy={rc.y + 7*Math.sin(ar)}
-            rx={3.5} ry={5} fill="white"
+          const ar = a * Math.PI/180;
+          return <ellipse key={i} cx={rc.x+7*Math.cos(ar)} cy={rc.y+7*Math.sin(ar)}
+            rx={3} ry={4.5} fill="white"
             transform={`rotate(${a+90},${rc.x+7*Math.cos(ar)},${rc.y+7*Math.sin(ar)})`}/>;
         })}
         {[0,60,120,180,240,300].map((a,i) => {
-          const ar = a*Math.PI/180, r1=2.5, r2=7.5;
-          return (
-            <g key={i}>
-              <line x1={rc.x+r1*Math.cos(ar)} y1={rc.y+r1*Math.sin(ar)}
-                    x2={rc.x+r2*Math.cos(ar)} y2={rc.y+r2*Math.sin(ar)}
-                stroke="#A06818" strokeWidth="1.1" strokeLinecap="round" opacity={0.85}/>
-              <circle cx={rc.x+r2*Math.cos(ar)} cy={rc.y+r2*Math.sin(ar)} r={1.6} fill="#C88C20"/>
-            </g>
-          );
+          const ar=a*Math.PI/180, r1=2.5, r2=7.5;
+          return <g key={i}>
+            <line x1={rc.x+r1*Math.cos(ar)} y1={rc.y+r1*Math.sin(ar)}
+                  x2={rc.x+r2*Math.cos(ar)} y2={rc.y+r2*Math.sin(ar)}
+              stroke="#A06818" strokeWidth="1" strokeLinecap="round" opacity={0.8}/>
+            <circle cx={rc.x+r2*Math.cos(ar)} cy={rc.y+r2*Math.sin(ar)} r={1.6} fill="#C88C20"/>
+          </g>;
         })}
         <circle cx={rc.x} cy={rc.y} r={3} fill="#E0A030"/>
       </g>
