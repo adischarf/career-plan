@@ -210,70 +210,97 @@ function PeonyFlower({ r }) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// BOUGAINVILLEA — two flowers, bracts fan upward from the stem tip
-// Branch ends at the BOTTOM of the flower (lb/rb = "left base" / "right base")
-// Bracts grow upward from there; center sits at the top of the bract cluster
+// BOUGAINVILLEA — two flower clusters on branching stem
+// Each cluster: 3 wide heart-shaped bracts (like real bougainvillea)
+// True flower: 3 tiny white tube florets growing outward from center point
 // ═══════════════════════════════════════════════════════════════════════════════
 function BougainvilleaFlower({ r }) {
   const steps = [
     { key: 'stem',    delay: 80  },
-    { key: 'branch1', delay: 350 },
-    { key: 'branch2', delay: 430 },
+    { key: 'branch1', delay: 340 },
+    { key: 'branch2', delay: 420 },
     { key: 'leaf1',   delay: 500 },
-    { key: 'leaf2',   delay: 600 },
-    { key: 'leaf3',   delay: 670 },
-    { key: 'l0', delay: 780  },
-    { key: 'l1', delay: 860  },
-    { key: 'l2', delay: 940  },
-    { key: 'l3', delay: 1020 },
-    { key: 'l4', delay: 1100 },
-    { key: 'r0', delay: 860  },
-    { key: 'r1', delay: 940  },
-    { key: 'r2', delay: 1020 },
-    { key: 'r3', delay: 1100 },
-    { key: 'r4', delay: 1180 },
-    { key: 'tc1', delay: 1280 },
-    { key: 'tc2', delay: 1340 },
+    { key: 'leaf2',   delay: 590 },
+    { key: 'leaf3',   delay: 660 },
+    // Left flower bracts
+    { key: 'la', delay: 760  },
+    { key: 'lb', delay: 860  },
+    { key: 'lc', delay: 960  },
+    // Right flower bracts
+    { key: 'ra', delay: 840  },
+    { key: 'rb', delay: 940  },
+    { key: 'rc', delay: 1040 },
+    // True flower florets
+    { key: 'lf', delay: 1180 },
+    { key: 'rf', delay: 1240 },
   ];
   const rev = useTiming(steps, r);
 
   const fork = { x: 158, y: 150 };
+  // Base = where branch meets flower bottom; top = where florets emerge
+  const lBase = { x: 100, y: 115 };
+  const rBase = { x: 216, y: 103 };
+  const bH = 58; // bract height
+  const bW = 28; // bract width
+  // The 3 florets sit roughly 2/3 up the bract cluster
+  const lTop = { x: lBase.x, y: lBase.y - bH * 0.62 };
+  const rTop = { x: rBase.x, y: rBase.y - bH * 0.62 };
 
-  // lb/rb = base of flower = where branch tip meets the flower bottom
-  // The bracts fan upward from here; center is ~bractLength above the base
-  const bractLen = 50;
-  const lb = { x: 100, y: 108 };   // left flower base
-  const rb = { x: 218, y:  96 };   // right flower base
-  // Center of each flower = base + upward offset (roughly bractLen * 0.72)
-  const lc = { x: lb.x, y: lb.y - Math.round(bractLen * 0.72) };
-  const rc = { x: rb.x, y: rb.y - Math.round(bractLen * 0.72) };
-
-  // Wide rounded bract growing from (bx,by) in direction angleDeg
-  function bracPath(bx, by, angleDeg, w, h) {
-    const a  = angleDeg * Math.PI / 180;
+  // Wide heart-shaped bract path growing from (bx,by) at angleDeg
+  function bracPath(bx, by, angle, w, h) {
+    const a = angle * Math.PI / 180;
+    const p = (angle + 90) * Math.PI / 180;
     const tx = bx + h * Math.cos(a);
     const ty = by + h * Math.sin(a);
-    const perp = (angleDeg + 90) * Math.PI / 180;
-    const c1x = bx + h*0.3*Math.cos(a) + w*0.55*Math.cos(perp);
-    const c1y = by + h*0.3*Math.sin(a) + w*0.55*Math.sin(perp);
-    const c2x = bx + h*0.7*Math.cos(a) + w*0.5*Math.cos(perp);
-    const c2y = by + h*0.7*Math.sin(a) + w*0.5*Math.sin(perp);
-    const c3x = bx + h*0.3*Math.cos(a) - w*0.55*Math.cos(perp);
-    const c3y = by + h*0.3*Math.sin(a) - w*0.55*Math.sin(perp);
-    const c4x = bx + h*0.7*Math.cos(a) - w*0.5*Math.cos(perp);
-    const c4y = by + h*0.7*Math.sin(a) - w*0.5*Math.sin(perp);
-    return `M ${bx} ${by} C ${c1x} ${c1y}, ${c2x} ${c2y}, ${tx} ${ty} C ${c4x} ${c4y}, ${c3x} ${c3y}, ${bx} ${by} Z`;
-  }
-  function veinPath(bx, by, angleDeg, h) {
-    const a = angleDeg * Math.PI / 180;
-    return `M ${bx} ${by} Q ${bx+h*0.45*Math.cos(a)} ${by+h*0.45*Math.sin(a)}, ${bx+h*0.82*Math.cos(a)} ${by+h*0.82*Math.sin(a)}`;
+    // Wide bezier — control points spread perpendicular
+    const c1x = bx + h*0.25*Math.cos(a) + w*0.65*Math.cos(p);
+    const c1y = by + h*0.25*Math.sin(a) + w*0.65*Math.sin(p);
+    const c2x = bx + h*0.68*Math.cos(a) + w*0.58*Math.cos(p);
+    const c2y = by + h*0.68*Math.sin(a) + w*0.58*Math.sin(p);
+    const c3x = bx + h*0.25*Math.cos(a) - w*0.65*Math.cos(p);
+    const c3y = by + h*0.25*Math.sin(a) - w*0.65*Math.sin(p);
+    const c4x = bx + h*0.68*Math.cos(a) - w*0.58*Math.cos(p);
+    const c4y = by + h*0.68*Math.sin(a) - w*0.58*Math.sin(p);
+    return `M ${bx} ${by} C ${c1x} ${c1y},${c2x} ${c2y},${tx} ${ty} C ${c4x} ${c4y},${c3x} ${c3y},${bx} ${by} Z`;
   }
 
-  // 5 bracts: spread from -155° to -25° (all pointing upward/outward)
-  // -90° = straight up. Spread evenly across a 130° fan.
-  const angles = [-155, -122, -90, -58, -25];
-  const lColors = ['#D84E90','#E868A4','#F090BC','#E060A0','#F8A8CC'];
-  const rColors = ['#DC5898','#EE78AC','#F898C4','#E470A8','#FAACCE'];
+  // Vein: center line of a bract
+  function vein(bx, by, angle, h) {
+    const a = angle * Math.PI / 180;
+    return `M ${bx} ${by} Q ${bx+h*0.42*Math.cos(a)} ${by+h*0.42*Math.sin(a)}, ${bx+h*0.8*Math.cos(a)} ${by+h*0.8*Math.sin(a)}`;
+  }
+
+  // True flower: 3 tiny white tube florets growing outward from top point
+  // Each floret is a tiny elongated white shape with a pale yellow tip
+  function TrueFlower({ tx, ty, show }) {
+    const floretAngles = [-110, -90, -70]; // tight cluster pointing mostly upward
+    return (
+      <g style={bloom(show, 0, tx, ty)}>
+        {/* Tiny dark calyx base */}
+        <circle cx={tx} cy={ty} r={4} fill="#6B2040" opacity={0.9}/>
+        {floretAngles.map((angle, i) => {
+          const a = angle * Math.PI / 180;
+          const len = 14;
+          const ex = tx + len * Math.cos(a);
+          const ey = ty + len * Math.sin(a);
+          return (
+            <g key={i}>
+              {/* Floret tube — thin white elongated shape */}
+              <line x1={tx} y1={ty} x2={ex} y2={ey}
+                stroke="white" strokeWidth="2.8" strokeLinecap="round" opacity={0.95}/>
+              {/* Tiny pale yellow tip at the end */}
+              <circle cx={ex} cy={ey} r={2.5} fill="#FFF5C0" stroke="#D4A020" strokeWidth="0.8"/>
+            </g>
+          );
+        })}
+      </g>
+    );
+  }
+
+  // 3 bract angles: left, center, right — fanning upward
+  // Center bract goes straight up (-90°), sides fan out
+  const lAngles = [{ key:'la', a:-148, color:'#CC3880' }, { key:'lb', a:-90, color:'#E05098' }, { key:'lc', a:-32, color:'#D44090' }];
+  const rAngles = [{ key:'ra', a:-148, color:'#D04090' }, { key:'rb', a:-90, color:'#E85AA0' }, { key:'rc', a:-32, color:'#D84898' }];
 
   return (
     <svg viewBox="20 0 300 235" width="100%" style={{ overflow:'visible', display:'block' }}>
@@ -282,90 +309,53 @@ function BougainvilleaFlower({ r }) {
         fill="none" stroke="#3A7830" strokeWidth="6" strokeLinecap="round"
         style={grow(rev.has('stem'), 80, '160px 228px')}
       />
-      {/* Left branch — ends at lb (bottom of left flower) */}
-      <path d={`M ${fork.x} ${fork.y} C ${fork.x-16} ${fork.y-22}, ${lb.x+20} ${lb.y+28}, ${lb.x} ${lb.y}`}
+      {/* Left branch → lBase */}
+      <path d={`M ${fork.x} ${fork.y} C ${fork.x-16} ${fork.y-20}, ${lBase.x+18} ${lBase.y+26}, ${lBase.x} ${lBase.y}`}
         fill="none" stroke="#4A8C3A" strokeWidth="4.5" strokeLinecap="round"
-        style={fadeIn(rev.has('branch1'), 350)}
+        style={fadeIn(rev.has('branch1'), 340)}
       />
-      {/* Right branch — ends at rb */}
-      <path d={`M ${fork.x} ${fork.y} C ${fork.x+22} ${fork.y-18}, ${rb.x-26} ${rb.y+24}, ${rb.x} ${rb.y}`}
+      {/* Right branch → rBase */}
+      <path d={`M ${fork.x} ${fork.y} C ${fork.x+22} ${fork.y-16}, ${rBase.x-24} ${rBase.y+22}, ${rBase.x} ${rBase.y}`}
         fill="none" stroke="#4A8C3A" strokeWidth="4" strokeLinecap="round"
-        style={fadeIn(rev.has('branch2'), 430)}
+        style={fadeIn(rev.has('branch2'), 420)}
       />
 
-      {/* Leaves */}
-      <g style={bloom(rev.has('leaf1'), 0, 128, 192)}>
-        <path d="M 157 187 C 144 172, 108 176, 115 198 C 122 216, 150 204, 157 187 Z" fill="#3A8C38"/>
-        <path d="M 157 187 C 142 190, 122 197, 115 198" fill="none" stroke="#2A6828" strokeWidth="1.4" opacity="0.6"/>
-        <path d="M 136 182 C 130 189, 124 196, 122 202" fill="none" stroke="#2A6828" strokeWidth="0.9" opacity="0.4"/>
+      {/* Leaves on main stem */}
+      <g style={bloom(rev.has('leaf1'), 0, 126, 192)}>
+        <path d="M 156 188 C 143 173, 106 177, 114 199 C 122 218, 150 205, 156 188 Z" fill="#3A8C38"/>
+        <path d="M 156 188 C 141 191, 120 198, 114 199" fill="none" stroke="#2A6828" strokeWidth="1.4" opacity="0.6"/>
+        <path d="M 135 184 C 129 191, 122 198, 120 204" fill="none" stroke="#2A6828" strokeWidth="0.9" opacity="0.4"/>
       </g>
       <g style={bloom(rev.has('leaf2'), 0, 180, 172)}>
-        <path d="M 160 170 C 170 156, 202 159, 195 178 C 188 195, 163 183, 160 170 Z" fill="#46A040"/>
-        <path d="M 160 170 C 172 172, 187 177, 195 178" fill="none" stroke="#2A6828" strokeWidth="1.3" opacity="0.55"/>
+        <path d="M 160 170 C 170 155, 204 158, 196 178 C 188 196, 163 183, 160 170 Z" fill="#46A040"/>
+        <path d="M 160 170 C 173 172, 188 177, 196 178" fill="none" stroke="#2A6828" strokeWidth="1.3" opacity="0.55"/>
       </g>
       <g style={bloom(rev.has('leaf3'), 0, fork.x-16, fork.y+14)}>
-        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-8} ${fork.y-8}, ${fork.x-36} ${fork.y-4}, ${fork.x-30} ${fork.y+18} C ${fork.x-24} ${fork.y+34}, ${fork.x-4} ${fork.y+24}, ${fork.x} ${fork.y+4} Z`} fill="#4AAA42"/>
-        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-14} ${fork.y+8}, ${fork.x-25} ${fork.y+16}, ${fork.x-30} ${fork.y+18}`} fill="none" stroke="#2A6828" strokeWidth="1.1" opacity="0.5"/>
+        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-7} ${fork.y-9}, ${fork.x-36} ${fork.y-3}, ${fork.x-29} ${fork.y+18} C ${fork.x-22} ${fork.y+34}, ${fork.x-3} ${fork.y+24}, ${fork.x} ${fork.y+4} Z`} fill="#4AAA42"/>
+        <path d={`M ${fork.x} ${fork.y+4} C ${fork.x-14} ${fork.y+8}, ${fork.x-24} ${fork.y+16}, ${fork.x-29} ${fork.y+18}`} fill="none" stroke="#2A6828" strokeWidth="1.1" opacity="0.5"/>
       </g>
 
-      {/* ── LEFT FLOWER — bracts fan upward from lb ── */}
-      {angles.map((angle, i) => (
-        <g key={`l${i}`} style={bloom(rev.has(`l${i}`), 0, lb.x, lb.y)}>
-          <path d={bracPath(lb.x, lb.y, angle, 23, bractLen)} fill={lColors[i]} opacity={0.92}/>
-          <path d={veinPath(lb.x, lb.y, angle, bractLen)}
-            fill="none" stroke="#A83068" strokeWidth="1.3" opacity="0.3" strokeLinecap="round"/>
+      {/* ── LEFT FLOWER: 3 bracts from lBase ── */}
+      {lAngles.map(({ key, a, color }) => (
+        <g key={key} style={bloom(rev.has(key), 0, lBase.x, lBase.y)}>
+          <path d={bracPath(lBase.x, lBase.y, a, bW, bH)} fill={color} opacity={0.93}/>
+          <path d={vein(lBase.x, lBase.y, a, bH)}
+            fill="none" stroke="#8A1850" strokeWidth="1.4" opacity="0.28" strokeLinecap="round"/>
         </g>
       ))}
 
-      {/* ── RIGHT FLOWER — bracts fan upward from rb ── */}
-      {angles.map((angle, i) => (
-        <g key={`r${i}`} style={bloom(rev.has(`r${i}`), 0, rb.x, rb.y)}>
-          <path d={bracPath(rb.x, rb.y, angle, 21, bractLen - 4)} fill={rColors[i]} opacity={0.92}/>
-          <path d={veinPath(rb.x, rb.y, angle, bractLen - 4)}
-            fill="none" stroke="#A83068" strokeWidth="1.2" opacity="0.3" strokeLinecap="round"/>
+      {/* ── RIGHT FLOWER: 3 bracts from rBase ── */}
+      {rAngles.map(({ key, a, color }) => (
+        <g key={key} style={bloom(rev.has(key), 0, rBase.x, rBase.y)}>
+          <path d={bracPath(rBase.x, rBase.y, a, bW - 3, bH - 5)} fill={color} opacity={0.93}/>
+          <path d={vein(rBase.x, rBase.y, a, bH - 5)}
+            fill="none" stroke="#8A1850" strokeWidth="1.3" opacity="0.28" strokeLinecap="round"/>
         </g>
       ))}
 
-      {/* ── TRUE FLOWER CENTERS — sit at the top of the bract cluster ── */}
-      <g style={bloom(rev.has('tc1'), 0, lc.x, lc.y)}>
-        <circle cx={lc.x} cy={lc.y} r={12} fill="#FFF6E8" stroke="#D4A030" strokeWidth="1"/>
-        {[0,72,144,216,288].map((a,i) => {
-          const ar = a*Math.PI/180;
-          return <ellipse key={i} cx={lc.x+7.5*Math.cos(ar)} cy={lc.y+7.5*Math.sin(ar)}
-            rx={3.5} ry={5} fill="white"
-            transform={`rotate(${a+90},${lc.x+7.5*Math.cos(ar)},${lc.y+7.5*Math.sin(ar)})`}/>;
-        })}
-        {[0,45,90,135,180,225,270,315].map((a,i) => {
-          const ar=a*Math.PI/180, r1=3, r2=8.5;
-          return <g key={i}>
-            <line x1={lc.x+r1*Math.cos(ar)} y1={lc.y+r1*Math.sin(ar)}
-                  x2={lc.x+r2*Math.cos(ar)} y2={lc.y+r2*Math.sin(ar)}
-              stroke="#A06818" strokeWidth="1.1" strokeLinecap="round" opacity={0.8}/>
-            <circle cx={lc.x+r2*Math.cos(ar)} cy={lc.y+r2*Math.sin(ar)} r={1.8} fill="#C88C20"/>
-          </g>;
-        })}
-        <circle cx={lc.x} cy={lc.y} r={3.5} fill="#E0A030"/>
-      </g>
-
-      <g style={bloom(rev.has('tc2'), 0, rc.x, rc.y)}>
-        <circle cx={rc.x} cy={rc.y} r={11} fill="#FFF6E8" stroke="#D4A030" strokeWidth="1"/>
-        {[0,72,144,216,288].map((a,i) => {
-          const ar = a*Math.PI/180;
-          return <ellipse key={i} cx={rc.x+7*Math.cos(ar)} cy={rc.y+7*Math.sin(ar)}
-            rx={3} ry={4.5} fill="white"
-            transform={`rotate(${a+90},${rc.x+7*Math.cos(ar)},${rc.y+7*Math.sin(ar)})`}/>;
-        })}
-        {[0,60,120,180,240,300].map((a,i) => {
-          const ar=a*Math.PI/180, r1=2.5, r2=7.5;
-          return <g key={i}>
-            <line x1={rc.x+r1*Math.cos(ar)} y1={rc.y+r1*Math.sin(ar)}
-                  x2={rc.x+r2*Math.cos(ar)} y2={rc.y+r2*Math.sin(ar)}
-              stroke="#A06818" strokeWidth="1" strokeLinecap="round" opacity={0.8}/>
-            <circle cx={rc.x+r2*Math.cos(ar)} cy={rc.y+r2*Math.sin(ar)} r={1.6} fill="#C88C20"/>
-          </g>;
-        })}
-        <circle cx={rc.x} cy={rc.y} r={3} fill="#E0A030"/>
-      </g>
+      {/* ── TRUE FLOWER FLORETS — tiny white tubes at top of each cluster ── */}
+      <TrueFlower tx={lTop.x} ty={lTop.y} show={rev.has('lf')} />
+      <TrueFlower tx={rTop.x} ty={rTop.y} show={rev.has('rf')} />
     </svg>
   );
 }
