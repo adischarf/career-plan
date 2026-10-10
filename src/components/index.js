@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TASKS, MONTHS } from '../data/planData';
+import { activeRecurringTasks, TRACK_COLORS, TRACK_COLORS_LIGHT } from '../utils/progress';
+import { getWeekKey } from '../hooks/useStorage';
 
 // ─── SunToggle.jsx ────────────────────────────────────────────────────────────
 export function SunToggle({ migraineMode, onToggle }) {
@@ -430,6 +432,99 @@ export function OnboardingModal({ onComplete, onOpenHelp }) {
             Skip
           </button>
         )}
+      </div>
+    </div>
+  );
+}
+
+
+// ─── RecurringStrip.jsx ───────────────────────────────────────────────────────
+// Compact strip of the recurring tasks she has started (marked complete).
+// One chip per task; tap to tick off this week (or this month for monthly ones).
+// Hidden entirely until she has started at least one.
+
+// Week keys that fall in the current calendar month (for monthly tasks)
+function weekKeysThisMonth(now = new Date()) {
+  const keys = [];
+  const d = new Date(now.getFullYear(), now.getMonth(), 1);
+  while (d.getMonth() === now.getMonth()) {
+    const k = getWeekKey(d);
+    if (!keys.includes(k)) keys.push(k);
+    d.setDate(d.getDate() + 1);
+  }
+  return keys;
+}
+
+export function RecurringStrip({ data, onLogHabit }) {
+  const tasks = activeRecurringTasks(data);
+  if (tasks.length === 0) return null;
+
+  const thisWeek  = getWeekKey();
+  const monthKeys = weekKeysThisMonth();
+
+  const status = tasks.map(t => {
+    const log = data.habitLogs[t.id] || {};
+    if (t.recurringFrequency === 'monthly') {
+      const logged = monthKeys.filter(k => log[k]);
+      return { task: t, done: logged.length > 0,
+               toggleKey: logged.length > 0 ? logged[logged.length - 1] : thisWeek };
+    }
+    return { task: t, done: !!log[thisWeek], toggleKey: thisWeek };
+  });
+  const doneCount = status.filter(x => x.done).length;
+
+  return (
+    <div style={{
+      background: 'var(--white)', border: '1px solid var(--border)',
+      borderRadius: 'var(--radius-md)', padding: 'var(--space-3) var(--space-4)',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 'var(--space-2)' }}>
+        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--bark)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>
+          🔄 Your recurring tasks
+        </span>
+        <span style={{ fontSize: '0.72rem', color: 'var(--bark)' }}>
+          {doneCount} of {status.length} done
+        </span>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+        {status.map(({ task, done, toggleKey }) => {
+          const color = TRACK_COLORS[task.trackId];
+          const when = task.recurringFrequency === 'monthly' ? 'this month' : 'this week';
+          return (
+            <button
+              key={task.id}
+              onClick={() => onLogHabit(task.id, toggleKey)}
+              title={`${task.recurringLabel} — tap to mark ${done ? 'not done' : 'done'} ${when}`}
+              aria-pressed={done}
+              aria-label={`${task.recurringShort || task.title}: ${done ? 'done' : 'not done'} ${when}`}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6,
+                minHeight: 32, padding: '4px 12px 4px 6px', borderRadius: '99px',
+                border: `1.5px solid ${color}`,
+                background: done ? TRACK_COLORS_LIGHT[task.trackId] : 'var(--white)',
+                cursor: 'pointer', fontFamily: 'var(--font-body)',
+                fontSize: '0.8rem', fontWeight: 600, color: 'var(--ink)',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <span style={{
+                width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
+                border: `2px solid ${color}`, background: done ? color : 'var(--white)',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {done && (
+                  <svg width="10" height="8" viewBox="0 0 11 8" fill="none">
+                    <path d="M1 4L4 7L10 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </span>
+              {task.recurringShort || task.title}
+              {task.recurringFrequency === 'monthly' && (
+                <span style={{ fontWeight: 400, color: 'var(--bark)', fontSize: '0.72rem' }}>· month</span>
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

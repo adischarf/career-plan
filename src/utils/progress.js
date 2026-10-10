@@ -4,8 +4,10 @@
 import { TASKS, MONTHS, PHASES, TRACKS, getTasksForMonth, getTasksForTrack, getTasksForPhase } from '../data/planData';
 
 // ── Subtask-level progress for a single task ─────────────────────────────────
+// Recurring tasks count as ONE unit, done when marked complete ("started").
+// Their subtasks are a how-to guide only and never count toward progress.
 export function taskProgress(task, data) {
-  if (!task.subtasks || task.subtasks.length === 0) {
+  if (task.isRecurring || !task.subtasks || task.subtasks.length === 0) {
     return { done: data.completedTasks[task.id] ? 1 : 0, total: 1, pct: data.completedTasks[task.id] ? 100 : 0 };
   }
   const subs = data.completedSubtasks[task.id] || {};
@@ -89,10 +91,15 @@ export function nextTask(monthId, data) {
   const tasks = getTasksForMonth(monthId);
   return tasks.find(t => {
     if (data.completedTasks[t.id]) return false;
-    if (!t.subtasks || t.subtasks.length === 0) return true;
+    if (t.isRecurring || !t.subtasks || t.subtasks.length === 0) return true;
     const subs = data.completedSubtasks[t.id] || {};
     return !t.subtasks.every(s => subs[s.id]);
   }) || null;
+}
+
+// ── Recurring tasks she has started (marked complete) — shown in the strip ──
+export function activeRecurringTasks(data) {
+  return TASKS.filter(t => t.isRecurring && data.completedTasks[t.id]);
 }
 
 // ── Wins: merge auto + manual, sorted newest first ──────────────────────────

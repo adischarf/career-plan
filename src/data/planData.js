@@ -3,8 +3,8 @@
 // Progress is stored separately in Google Drive (see useStorage hook).
 // To update the plan: edit this file and bump PLAN_VERSION.
 
-export const PLAN_VERSION = "1.1.1";
-export const PLAN_VERSION_NOTES = "Each new month now opens once you're halfway through the one before it — so you can start on what's next sooner.";
+export const PLAN_VERSION = "1.1.2";
+export const PLAN_VERSION_NOTES = "Recurring tasks now have their own strip at the top. Mark one complete when you start it, then tick it off each week. Reading longer-form pieces (C4) is now recurring too.";
 
 // ─── TRACK DEFINITIONS ───────────────────────────────────────────────────────
 export const TRACKS = {
@@ -338,6 +338,8 @@ export const TASKS = [
     isRecurring: true,
     recurringLabel: "Weekly Sunday reset",
     recurringDescription: "Each week: 10 minutes to look at the week ahead and schedule your career development sessions (aim for 5–10 hrs total).",
+    recurringShort: "Sunday reset",
+    recurringFrequency: "weekly",
     hasOutput: false,
     winText: "Established your Sunday reset rhythm — flexible structure that bends without breaking",
     timeBox: "10 minutes each week",
@@ -382,6 +384,8 @@ export const TASKS = [
     isRecurring: true,
     recurringLabel: "Weekly LinkedIn engagement (no feed)",
     recurringDescription: "One action per week: search → org page or thought leader → engage → close. Never open the home feed. 20 minutes max.",
+    recurringShort: "LinkedIn, no feed",
+    recurringFrequency: "weekly",
     hasOutput: false,
     winText: "Did a focused LinkedIn session — on your terms, without the comparison spiral",
     timeBox: "20 minutes max",
@@ -427,7 +431,11 @@ export const TASKS = [
       { id: "C4d", text: "If you have The Red Book: read one chapter or section" },
       { id: "C4e", text: "Set a goal: at least one longer piece per week going forward" },
     ],
-    isRecurring: false,
+    isRecurring: true,
+    recurringLabel: "Weekly longer-form read",
+    recurringDescription: "One longer piece per week: read the executive summary and recommendations, then add one sentence to your field journal. Add a chapter of The Red Book when you can.",
+    recurringShort: "Longer-form read",
+    recurringFrequency: "weekly",
     hasOutput: false,
     winText: "Read longer-form field pieces and started on your reference books",
     timeBox: "15–20 minutes per piece",
@@ -462,6 +470,8 @@ export const TASKS = [
     isRecurring: true,
     recurringLabel: "Weekly legislative scan (5 min)",
     recurringDescription: "5 minutes per week: scan your Congressional tracker. Note what's moving, who the key players are, what the arguments are.",
+    recurringShort: "Legislative scan",
+    recurringFrequency: "weekly",
     hasOutput: false,
     winText: "Set up your Congressional tracker — you now know what's moving on the Hill",
     timeBox: "5 minutes per week ongoing",
@@ -513,6 +523,8 @@ export const TASKS = [
     isRecurring: true,
     recurringLabel: "Monthly coalition project hours",
     recurringDescription: "Come prepared. Do more than asked. Ask questions that show policy depth. This is your internal audition.",
+    recurringShort: "Coalition hours",
+    recurringFrequency: "monthly",
     hasOutput: false,
     winText: "Showed up fully for your coalition project hours — your internal audition",
   },
@@ -1057,6 +1069,8 @@ export const TASKS = [
     isRecurring: true,
     recurringLabel: "Monthly informational interview",
     recurringDescription: "One per month: signal that you're in the market. Have your 'what I'm looking for' answer ready.",
+    recurringShort: "Informational interview",
+    recurringFrequency: "monthly",
     hasOutput: false,
     winText: "Continued informational interviews — your network knows you're looking",
   },

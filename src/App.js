@@ -15,7 +15,7 @@ import {
 // Components
 import {
   SignInScreen, OnboardingModal, UpdateBanner,
-  InactivityBanner, BottomNav, SunToggle, SaveIndicator
+  InactivityBanner, BottomNav, SunToggle, SaveIndicator, RecurringStrip
 } from './components/index';
 
 export default function App() {
@@ -156,6 +156,11 @@ export default function App() {
       }}>
         {/* key resets the safety net when switching tabs */}
         <ErrorBoundary key={activeTab}>
+          {(activeTab === 'home' || activeTab === 'plan') && (
+            <div style={{ maxWidth: '600px', margin: '0 auto', padding: 'var(--space-4) var(--space-6) 0' }}>
+              <RecurringStrip data={data} onLogHabit={storage.logHabit} />
+            </div>
+          )}
           {renderScreen()}
         </ErrorBoundary>
       </main>

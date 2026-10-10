@@ -301,7 +301,7 @@ function TaskCard({ task, data, storage, onCrossRefClick, onCelebrate }) {
           </p>
 
           {/* Progress bar (if subtasks) */}
-          {task.subtasks?.length > 0 && !isComplete && (
+          {task.subtasks?.length > 0 && !task.isRecurring && !isComplete && (
             <div style={{ marginTop: 'var(--space-2)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                 <span style={{ fontSize: '0.7rem', color: 'var(--bark)' }}>{tp.done}/{tp.total} subtasks</span>
@@ -444,6 +444,21 @@ function TaskCard({ task, data, storage, onCrossRefClick, onCelebrate }) {
           {/* Habit tracker (for recurring tasks) */}
           {task.isRecurring && (
             <div style={{ marginBottom: 'var(--space-4)' }}>
+              {/* How-to steps: guidance only, no checkboxes, not counted in progress */}
+              {task.subtasks?.length > 0 && (
+                <div style={{ marginBottom: 'var(--space-3)' }}>
+                  <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--bark)', marginBottom: 'var(--space-2)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    How to
+                  </p>
+                  <ol style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: 'var(--space-1)' }}>
+                    {task.subtasks.map(sub => (
+                      <li key={sub.id} style={{ fontSize: '0.875rem', color: 'var(--ink-light)', lineHeight: 1.5 }}>
+                        {sub.text}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
               {task.recurringDescription && (
                 <p style={{ fontSize: '0.8125rem', color: 'var(--bark)', fontStyle: 'italic', marginBottom: 'var(--space-2)' }}>
                   {task.recurringDescription}
@@ -534,6 +549,11 @@ function TaskCard({ task, data, storage, onCrossRefClick, onCelebrate }) {
           </div>
 
           {/* Mark complete / unmark — for tasks without subtasks, or override */}
+          {task.isRecurring && !isComplete && (
+            <p style={{ marginTop: 'var(--space-4)', fontSize: '0.8125rem', color: 'var(--bark)', lineHeight: 1.5, textAlign: 'right' }}>
+              Mark this complete once you've started. It will stay in your recurring tasks at the top so you can tick it off each {task.recurringFrequency === 'monthly' ? 'month' : 'week'}.
+            </p>
+          )}
           <div style={{ marginTop: 'var(--space-4)', display: 'flex', justifyContent: 'flex-end' }}>
             {isComplete ? (
               <button
@@ -543,7 +563,7 @@ function TaskCard({ task, data, storage, onCrossRefClick, onCelebrate }) {
               >
                 Unmark complete
               </button>
-            ) : !task.subtasks?.length ? (
+            ) : (task.isRecurring || !task.subtasks?.length) ? (
               <button
                 className="btn-primary"
                 onClick={handleMarkComplete}
@@ -598,7 +618,7 @@ function CrossRefModal({ task, data, storage, onClose }) {
           {task.body}
         </p>
 
-        {task.subtasks?.length > 0 && (
+        {task.subtasks?.length > 0 && !task.isRecurring && (
           <div>
             <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--bark)', marginBottom: 'var(--space-2)' }}>
               Progress: {tp.done}/{tp.total} subtasks · {tp.pct}%

@@ -40,7 +40,7 @@ const SECTIONS = [
       },
       {
         heading: 'Recurring tasks',
-        body: 'Some tasks are habits — things you do every week, like the Sunday reset or weekly LinkedIn engagement. These have a habit tracker instead of subtasks. Each circle represents a week. Tap a circle to mark that week done. Gaps are visible but don\'t reset your streak — missing a week is just a gap, not a failure.',
+        body: 'Some tasks are habits — things you do every week (or every month), like the Sunday reset or weekly LinkedIn engagement. Instead of subtasks, they have short "How to" steps and a tracker. Mark the task complete once you\'ve started it. From then on it lives in "Your recurring tasks" at the top of Home and Plan: tap it each week to tick it off. Gaps are visible but don\'t reset anything. Missing a week is just a gap, not a failure.',
       },
       {
         heading: 'Linking your outputs',

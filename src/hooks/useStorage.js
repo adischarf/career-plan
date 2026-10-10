@@ -453,9 +453,9 @@ export function getWeekKey(date = new Date()) {
 
 // ── Progress computation ─────────────────────────────────────────────────────
 export function computeProgress(data, tasks) {
-  const total = tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0);
+  const total = tasks.reduce((sum, t) => sum + (t.isRecurring ? 1 : (t.subtasks?.length || 1)), 0);
   const done  = tasks.reduce((sum, t) => {
-    if (!t.subtasks?.length) return sum + (data.completedTasks[t.id] ? 1 : 0);
+    if (t.isRecurring || !t.subtasks?.length) return sum + (data.completedTasks[t.id] ? 1 : 0);
     const subs = data.completedSubtasks[t.id] || {};
     return sum + t.subtasks.filter(s => subs[s.id]).length;
   }, 0);

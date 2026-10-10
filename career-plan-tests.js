@@ -458,7 +458,8 @@ else fail('isMonthComplete should return true when all subtasks done');
 
 // 4.13 Track progress sums correctly
 const trackATasks = TASKS.filter(t => t.trackId === 'A');
-const totalTrackASubs = trackATasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0);
+const units = t => t.isRecurring ? 1 : (t.subtasks?.length || 1); // recurring = 1 unit
+const totalTrackASubs = trackATasks.reduce((sum, t) => sum + units(t), 0);
 const tpA = trackProgress('A', emptyData);
 if (tpA.total === totalTrackASubs && tpA.done === 0) pass('Track A total subtask count correct (' + totalTrackASubs + ')');
 else fail('Track A total: expected ' + totalTrackASubs + ', got ' + tpA.total);
@@ -466,10 +467,34 @@ else fail('Track A total: expected ' + totalTrackASubs + ', got ' + tpA.total);
 // 4.14 Phase progress aggregates across all months
 const phase1 = PHASES.find(p => p.id === 'phase1');
 const phase1Tasks = TASKS.filter(t => phase1.months.includes(t.monthId));
-const totalPhase1Subs = phase1Tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0);
+const totalPhase1Subs = phase1Tasks.reduce((sum, t) => sum + units(t), 0);
 const pp1 = phaseProgress('phase1', emptyData);
 if (pp1.total === totalPhase1Subs) pass('Phase 1 total subtask count correct (' + totalPhase1Subs + ')');
 else fail('Phase 1 total: expected ' + totalPhase1Subs + ', got ' + pp1.total);
+
+// 4.15 Recurring tasks count as ONE unit, done only when marked complete
+const recurring = TASKS.filter(t => t.isRecurring);
+const expectedRecurring = ['A5','B4','C4','C11','E4','B16'];
+const recIds = recurring.map(t => t.id);
+if (expectedRecurring.every(id => recIds.includes(id)) && recIds.length === expectedRecurring.length)
+  pass('Recurring tasks are exactly ' + expectedRecurring.join(', '));
+else fail('Recurring tasks expected ' + expectedRecurring.join(',') + ', got ' + recIds.join(','));
+let recIssues = 0;
+recurring.forEach(t => {
+  // ticking every hidden step must NOT complete a recurring task
+  const allSteps = {}; (t.subtasks || []).forEach(x => { allSteps[x.id] = true; });
+  const p1 = taskProgress(t, { ...emptyData, completedSubtasks: { [t.id]: allSteps } });
+  const p2 = taskProgress(t, { ...emptyData, completedTasks: { [t.id]: true } });
+  if (p1.total !== 1 || p1.done !== 0) { fail(t.id + ': hidden steps count toward progress (' + p1.done + '/' + p1.total + ')'); recIssues++; }
+  if (p2.done !== 1 || p2.pct !== 100) { fail(t.id + ': marking complete does not complete it'); recIssues++; }
+  if (!t.recurringShort) { fail(t.id + ': missing recurringShort (strip label)'); recIssues++; }
+  if (!['weekly','monthly'].includes(t.recurringFrequency)) { fail(t.id + ': recurringFrequency must be weekly or monthly'); recIssues++; }
+});
+if (recIssues === 0) pass('Recurring tasks: 1 unit each, done when marked complete, have strip label + frequency');
+const m2 = monthProgress('month2', emptyData);
+const m2Expected = TASKS.filter(t => t.monthId === 'month2').reduce((s2, t) => s2 + units(t), 0);
+if (m2.total === m2Expected) pass('Month 2 total counts recurring tasks once (' + m2.total + ' units)');
+else fail('Month 2 total expected ' + m2Expected + ', got ' + m2.total);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUITE 5 — CSS and graphics
@@ -718,6 +743,14 @@ let nestedHooks = 0;
   });
 });
 if (nestedHooks === 0) pass('No hooks called inside loops, callbacks or conditions');
+
+// 7.8b Recurring strip exists, is wired into App, and the task card hides the subtask bar
+const compSrc = fs.readFileSync(path.join(__dirname, 'src/components/index.js'), 'utf8');
+if (compSrc.includes('export function RecurringStrip') && appSrcForEB().includes('<RecurringStrip')) pass('RecurringStrip defined and rendered in App');
+else fail('RecurringStrip missing or not rendered');
+const planSrc2 = fs.readFileSync(path.join(__dirname, 'src/screens/PlanScreen.jsx'), 'utf8');
+if (planSrc2.includes('task.subtasks?.length > 0 && !task.isRecurring && !isComplete')) pass('Recurring tasks do not show an "x/y subtasks" bar');
+else fail('Recurring tasks may still show an "x/y subtasks" bar');
 
 // 7.9 Safety net: error boundaries present so a crash never shows a blank page
 const ebPath = path.join(__dirname, 'src/components/ErrorBoundary.jsx');
