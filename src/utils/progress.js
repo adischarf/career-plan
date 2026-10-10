@@ -65,7 +65,11 @@ export function isPhaseComplete(phaseId, data) {
 
 // ── Which months are unlocked (progressive reveal) ───────────────────────────
 // Month 1 is always unlocked.
-// Subsequent months unlock when the previous month hits 70%+ progress.
+// Each later month unlocks when the previous month reaches UNLOCK_THRESHOLD %
+// (measured by subtasks). All UI text about unlocking reads this constant —
+// change it here only.
+export const UNLOCK_THRESHOLD = 50;
+
 export function getUnlockedMonths(data) {
   const unlocked = new Set();
   const monthOrder = MONTHS.map(m => m.id);
@@ -75,7 +79,7 @@ export function getUnlockedMonths(data) {
     if (i === 0) { unlocked.add(mid); continue; }
     const prevId = monthOrder[i - 1];
     const prev = monthProgress(prevId, data);
-    if (prev.pct >= 70) unlocked.add(mid);
+    if (prev.pct >= UNLOCK_THRESHOLD) unlocked.add(mid);
   }
   return unlocked;
 }

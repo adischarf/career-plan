@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { TASKS, MONTHS, PHASES, TRACKS } from '../data/planData';
 import {
   taskProgress, monthProgress, overallProgress,
-  isMonthComplete, getUnlockedMonths, nextTask,
+  isMonthComplete, getUnlockedMonths, nextTask, UNLOCK_THRESHOLD,
   TRACK_COLORS,
 } from '../utils/progress';
 
@@ -402,8 +402,8 @@ export default function DevTestPanel({ storage, onClose }) {
             'Output link field: paste a URL and label → saves and becomes a tappable link',
             'Habit tracker: tapping week circles fills/unfills them (no streak reset on gaps)',
             'Journal note added to a task appears in the Journal tab with task tag',
-            'Month 2 shows as locked before Month 1 is 70% complete',
-            'Month 2 unlocks after completing 70%+ of Month 1 tasks',
+            `Month 2 shows as locked before Month 1 is ${UNLOCK_THRESHOLD}% complete`,
+            `Month 2 unlocks after completing ${UNLOCK_THRESHOLD}%+ of Month 1 subtasks`,
           ]},
           { group: 'Celebrations', items: [
             'Completing the last task in Month 1 shows lilac flower animation',

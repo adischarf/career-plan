@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { UNLOCK_THRESHOLD } from '../utils/progress';
 
 const SECTIONS = [
   {
@@ -58,7 +59,7 @@ const SECTIONS = [
     content: [
       {
         heading: 'Progressive reveal',
-        body: 'The plan reveals one month at a time. New months unlock when you\'ve completed at least 70% of the current one. You don\'t have to finish a month completely before the next one opens — just get most of it done.',
+        body: `The plan reveals one month at a time. Each new month unlocks once you've completed at least ${UNLOCK_THRESHOLD}% of the one before it. You don't have to finish a month before the next one opens — you can keep wrapping up earlier tasks while you start on what's next.`,
       },
       {
         heading: 'Your current month',

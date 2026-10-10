@@ -3,8 +3,8 @@
 // Progress is stored separately in Google Drive (see useStorage hook).
 // To update the plan: edit this file and bump PLAN_VERSION.
 
-export const PLAN_VERSION = "1.1.0";
-export const PLAN_VERSION_NOTES = "Compressed timeline to 6 months. Expanded reading, congressional literacy, writing portfolio, and data skills.";
+export const PLAN_VERSION = "1.1.1";
+export const PLAN_VERSION_NOTES = "Each new month now opens once you're halfway through the one before it — so you can start on what's next sooner.";
 
 // ─── TRACK DEFINITIONS ───────────────────────────────────────────────────────
 export const TRACKS = {

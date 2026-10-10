@@ -6,7 +6,7 @@ import {
 import {
   monthProgress, taskProgress, isMonthComplete,
   isTrackComplete, isPhaseComplete,
-  getUnlockedMonths, TRACK_COLORS, TRACK_COLORS_LIGHT,
+  getUnlockedMonths, UNLOCK_THRESHOLD, TRACK_COLORS, TRACK_COLORS_LIGHT,
 } from '../utils/progress';
 import { getWeekKey } from '../hooks/useStorage';
 import FlowerCelebration from '../components/FlowerCelebration';
@@ -642,7 +642,7 @@ function MonthSection({ month, data, storage, isUnlocked, isCurrent, onSetCurren
         <div>
           <p style={{ fontWeight: 600, color: 'var(--ink)', fontSize: '0.9rem' }}>{month.label}</p>
           <p style={{ fontSize: '0.8rem', color: 'var(--bark)' }}>
-            Complete 70% of {MONTHS[MONTHS.findIndex(m => m.id === month.id) - 1]?.label || 'the previous month'} to unlock
+            Complete {UNLOCK_THRESHOLD}% of {MONTHS[MONTHS.findIndex(m => m.id === month.id) - 1]?.label || 'the previous month'} to unlock
           </p>
         </div>
       </div>

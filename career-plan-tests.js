@@ -50,7 +50,7 @@ module.exports = {
   taskProgress, tasksProgress, monthProgress, trackProgress,
   phaseProgress, overallProgress,
   isMonthComplete, isTrackComplete, isPhaseComplete,
-  getUnlockedMonths, nextTask, allWinsSorted, formatDate,
+  getUnlockedMonths, nextTask, allWinsSorted, formatDate, UNLOCK_THRESHOLD,
   TRACK_COLORS, TRACK_COLORS_LIGHT,
 };`;
 
@@ -61,7 +61,7 @@ const {
   PLAN_VERSION,
   taskProgress, monthProgress, trackProgress, phaseProgress, overallProgress,
   isMonthComplete, isTrackComplete, isPhaseComplete,
-  getUnlockedMonths, nextTask,
+  getUnlockedMonths, nextTask, UNLOCK_THRESHOLD,
   TRACK_COLORS, TRACK_COLORS_LIGHT,
 } = M;
 
@@ -382,28 +382,42 @@ const unlocked = getUnlockedMonths(emptyData);
 if (unlocked.has('month1')) pass('month1 always unlocked on fresh data');
 else fail('month1 should always be unlocked');
 
-// 4.6 Month 2 locked when month1 < 70%
+// 4.6 Month 2 locked when month1 = 0%
 if (!unlocked.has('month2')) pass('month2 locked when month1 = 0%');
 else fail('month2 should be locked when month1 = 0%');
 
-// 4.7 Month 2 unlocks at 70% of month1
+// 4.7 Unlock threshold is 50% and Month 2 unlocks exactly there
+if (UNLOCK_THRESHOLD === 50) pass('UNLOCK_THRESHOLD is 50%');
+else fail('UNLOCK_THRESHOLD expected 50, got ' + UNLOCK_THRESHOLD);
 const month1Tasks = TASKS.filter(t => t.monthId === 'month1');
 const totalSubs = month1Tasks.reduce((sum, t) => sum + (t.subtasks?.length || 1), 0);
-const needed = Math.ceil(totalSubs * 0.7);
-let done70 = 0;
-const subs70 = {};
+// Smallest subtask count whose rounded % reaches the threshold
+let needed = 0;
+while (Math.round((needed / totalSubs) * 100) < UNLOCK_THRESHOLD) needed++;
+function month1WithSubs(n) {
+  let c = 0; const subs = {};
+  for (const t of month1Tasks) {
+    subs[t.id] = {};
+    for (const s of (t.subtasks || [])) { if (c < n) { subs[t.id][s.id] = true; c++; } }
+  }
+  return { ...emptyData, completedSubtasks: subs };
+}
+if (!getUnlockedMonths(month1WithSubs(needed - 1)).has('month2')) pass('month2 stays locked one subtask below ' + UNLOCK_THRESHOLD + '% (' + (needed-1) + '/' + totalSubs + ')');
+else fail('month2 unlocked below ' + UNLOCK_THRESHOLD + '% (' + (needed-1) + '/' + totalSubs + ')');
+let doneAt = 0;
+const subsAt = {};
 for (const t of month1Tasks) {
   if (t.subtasks) {
-    subs70[t.id] = {};
+    subsAt[t.id] = {};
     for (const s of t.subtasks) {
-      if (done70 < needed) { subs70[t.id][s.id] = true; done70++; }
+      if (doneAt < needed) { subsAt[t.id][s.id] = true; doneAt++; }
     }
   }
 }
-const data70 = { ...emptyData, completedSubtasks: subs70 };
-const unlocked70 = getUnlockedMonths(data70);
-if (unlocked70.has('month2')) pass('month2 unlocks when month1 reaches 70%');
-else fail('month2 should unlock at 70% of month1, but did not');
+const dataAt = { ...emptyData, completedSubtasks: subsAt };
+const unlockedAt = getUnlockedMonths(dataAt);
+if (unlockedAt.has('month2')) pass('month2 unlocks when month1 reaches ' + UNLOCK_THRESHOLD + '% (' + needed + '/' + totalSubs + ')');
+else fail('month2 should unlock at ' + UNLOCK_THRESHOLD + '% of month1, but did not');
 
 // 4.8 nextTask returns first incomplete task
 const firstTask = nextTask('month1', emptyData);
