@@ -618,6 +618,10 @@ function CrossRefModal({ task, data, storage, onClose }) {
 // ── Month section ─────────────────────────────────────────────────────────────
 function MonthSection({ month, data, storage, isUnlocked, isCurrent, onSetCurrent, onCelebrate }) {
   const [collapsed, setCollapsed] = useState(!isCurrent);
+  // Cross-ref modal state lives here, at the top level of the component.
+  // (Hooks must never be called inside loops or conditionals — doing so
+  // crashed the whole app whenever a month was opened or closed.)
+  const [crossRef, setCrossRef] = useState(null);
   const tasks   = getTasksForMonth(month.id);
   const mProg   = monthProgress(month.id, data);
   const complete = isMonthComplete(month.id, data);
@@ -701,7 +705,6 @@ function MonthSection({ month, data, storage, isUnlocked, isCurrent, onSetCurren
           {trackIds.map(trackId => {
             const trackTasks = tasks.filter(t => t.trackId === trackId);
             const track = TRACKS[trackId];
-            const [crossRef, setCrossRef] = React.useState(null);
             return (
               <div key={trackId} style={{ marginBottom: 'var(--space-4)' }}>
                 {/* Track sub-header */}
@@ -717,28 +720,29 @@ function MonthSection({ month, data, storage, isUnlocked, isCurrent, onSetCurren
                 </div>
 
                 {trackTasks.map(task => (
-                  <React.Fragment key={task.id}>
-                    <TaskCard
-                      task={task}
-                      data={data}
-                      storage={storage}
-                      onCrossRefClick={setCrossRef}
-                      onCelebrate={onCelebrate}
-                    />
-                    {crossRef && (
-                      <CrossRefModal
-                        task={crossRef}
-                        data={data}
-                        storage={storage}
-                        onClose={() => setCrossRef(null)}
-                      />
-                    )}
-                  </React.Fragment>
+                  <TaskCard
+                    key={task.id}
+                    task={task}
+                    data={data}
+                    storage={storage}
+                    onCrossRefClick={setCrossRef}
+                    onCelebrate={onCelebrate}
+                  />
                 ))}
               </div>
             );
           })}
         </div>
+      )}
+
+      {/* One cross-ref modal per month (previously one per task, stacked) */}
+      {crossRef && (
+        <CrossRefModal
+          task={crossRef}
+          data={data}
+          storage={storage}
+          onClose={() => setCrossRef(null)}
+        />
       )}
     </div>
   );

@@ -39,6 +39,20 @@ let gisLoaded  = false;
 let tokenClient = null;
 let fileId = null;
 let saveTimer = null;
+let reconnecting = false;   // true while renewing an expired Google sign-in
+
+// Google access tokens last ~1 hour and can't be renewed without a click
+// (browsers block the sign-in popup otherwise). We track the expiry so a save
+// can ask for a one-click "Reconnect" instead of failing silently.
+const TOKEN_EXPIRY_KEY = 'gapi_token_expires_at';
+function tokenExpired() {
+  const exp = Number(sessionStorage.getItem(TOKEN_EXPIRY_KEY) || 0);
+  return exp > 0 && Date.now() > exp - 60 * 1000; // 1-minute safety margin
+}
+function isAuthError(e) {
+  const code = e?.status || e?.result?.error?.code;
+  return code === 401 || code === 403;
+}
 
 export function useStorage() {
   const [authState, setAuthState]       = useState('loading'); // 'loading'|'signed_out'|'signed_in'
@@ -94,7 +108,7 @@ export function useStorage() {
   function maybeReady() {
     if (!gapiLoaded || !gisLoaded) return;
     const token = sessionStorage.getItem('gapi_token');
-    if (token) {
+    if (token && !tokenExpired()) {
       window.gapi.client.setToken(JSON.parse(token));
       loadOrCreateFile();
     } else {
@@ -103,9 +117,43 @@ export function useStorage() {
   }
 
   async function handleTokenResponse(resp) {
-    if (resp.error) { setAuthState('signed_out'); return; }
+    if (resp.error) {
+      if (reconnecting) { reconnecting = false; setSaveStatus('needs_reauth'); return; }
+      setAuthState('signed_out'); return;
+    }
     sessionStorage.setItem('gapi_token', JSON.stringify(window.gapi.client.getToken()));
+    if (resp.expires_in) {
+      sessionStorage.setItem(TOKEN_EXPIRY_KEY, String(Date.now() + Number(resp.expires_in) * 1000));
+    }
+    if (reconnecting) {
+      // Renewing mid-session: keep what's on screen and save it.
+      // (Do NOT reload from Drive — that would discard unsaved changes.)
+      reconnecting = false;
+      await saveToDrive(dataRef.current);
+      return;
+    }
     await loadOrCreateFile();
+  }
+
+  // ── Write current data to Drive (Google mode only) ─────────────────────
+  async function saveToDrive(newData) {
+    if (!fileId) return;
+    if (tokenExpired()) { setSaveStatus('needs_reauth'); return; }
+    setSaveStatus('saving');
+    try {
+      await window.gapi.client.request({
+        path: `/upload/drive/v3/files/${fileId}`,
+        method: 'PATCH',
+        params: { uploadType: 'media' },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newData),
+      });
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(s => (s === 'saved' ? 'idle' : s)), 2000);
+    } catch (e) {
+      console.error('Save error:', e);
+      setSaveStatus(isAuthError(e) ? 'needs_reauth' : 'error');
+    }
   }
 
   // ── Find or create the progress file in Drive ───────────────────────────
@@ -159,6 +207,12 @@ export function useStorage() {
   // ── Save (debounced) ─────────────────────────────────────────────────────
   const scheduleSave = useCallback((newData) => {
     if (saveTimer) clearTimeout(saveTimer);
+    if (authState !== 'dev_mode' && tokenExpired()) {
+      // Sign-in timed out: keep changes on screen and show "Reconnect to save".
+      // reconnect() saves the latest data once she clicks it.
+      setSaveStatus('needs_reauth');
+      return;
+    }
     setSaveStatus('saving');
     saveTimer = setTimeout(async () => {
       if (authState === 'dev_mode') {
@@ -167,21 +221,7 @@ export function useStorage() {
         setTimeout(() => setSaveStatus('idle'), 2000);
         return;
       }
-      if (!fileId) return;
-      try {
-        await window.gapi.client.request({
-          path: `/upload/drive/v3/files/${fileId}`,
-          method: 'PATCH',
-          params: { uploadType: 'media' },
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newData),
-        });
-        setSaveStatus('saved');
-        setTimeout(() => setSaveStatus('idle'), 2000);
-      } catch (e) {
-        console.error('Save error:', e);
-        setSaveStatus('error');
-      }
+      await saveToDrive(newData);
     }, 3000); // 3-second debounce
   }, [authState]);
 
@@ -201,6 +241,14 @@ export function useStorage() {
     if (tokenClient) tokenClient.requestAccessToken({ prompt: 'consent' });
   }, [authState]);
 
+  // One-click renewal of an expired sign-in (must be called from a click).
+  // prompt: '' skips the consent screen for an already-authorized account.
+  const reconnect = useCallback(() => {
+    if (authState === 'dev_mode' || !tokenClient) return;
+    reconnecting = true;
+    tokenClient.requestAccessToken({ prompt: '' });
+  }, [authState]);
+
   const signOut = useCallback(() => {
     if (authState === 'dev_mode') return;
     const token = window.gapi.client.getToken();
@@ -208,6 +256,7 @@ export function useStorage() {
       window.google.accounts.oauth2.revoke(token.access_token);
       window.gapi.client.setToken('');
       sessionStorage.removeItem('gapi_token');
+      sessionStorage.removeItem(TOKEN_EXPIRY_KEY);
     }
     fileId = null;
     setAuthState('signed_out');
@@ -365,6 +414,7 @@ export function useStorage() {
     saveStatus,
     signIn,
     signOut,
+    reconnect,
     // Progress actions
     toggleSubtask,
     markTaskComplete,

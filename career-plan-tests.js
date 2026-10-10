@@ -561,11 +561,15 @@ const expectedExports = [
   'addManualWin','editManualWin','deleteManualWin',
   'dismissBanner','toggleMigraineMode',
   'markOnboardingSeen','markVersionSeen',
-  'setCurrentMonth','setPlanPace','updateData',
+  'setCurrentMonth','setPlanPace','updateData','reconnect',
 ];
-const returnBlock = storageSrc.split('\n').slice(361, 392).join('\n');
+// Locate the hook's return block by content, not line numbers
+const _sl = storageSrc.split('\n');
+const _rs = _sl.findIndex(l => l === '  return {');
+const _re = _sl.findIndex((l, i) => i > _rs && l === '  };');
+const returnBlock = _rs >= 0 ? _sl.slice(_rs, _re + 1).join('\n') : '';
 const missingExports = expectedExports.filter(k => !returnBlock.includes(k));
-if (missingExports.length === 0) pass('All 23 storage methods/properties exported from useStorage');
+if (missingExports.length === 0) pass('All ' + expectedExports.length + ' storage methods/properties exported from useStorage');
 else missingExports.forEach(k => fail('useStorage missing export: ' + k));
 
 // 6.2 DEFAULT_STATE has all required fields
@@ -680,6 +684,35 @@ if (componentsSrc.includes('migraine') || componentsSrc.includes('sun icon')) {
 } else {
   warn('Onboarding may not mention migraine mode — new users might not know it exists');
 }
+
+// 7.8 Regression (v1.1.0 blank-page bug): no hooks called inside loops/callbacks.
+// A hook inside .map() changes the hook count when a month opens/closes,
+// which crashes React and blanks the page.
+let nestedHooks = 0;
+['src/screens/HomeScreen.jsx','src/screens/PlanScreen.jsx','src/screens/WinsScreen.jsx',
+ 'src/screens/JournalScreen.jsx','src/screens/ReferenceScreen.jsx','src/screens/ProgressScreen.jsx',
+ 'src/screens/HelpScreen.jsx','src/components/index.js','src/components/FlowerCelebration.jsx','src/App.js'
+].forEach(f => {
+  const lines = fs.readFileSync(path.join(__dirname, f), 'utf8').split('\n');
+  lines.forEach((l, i) => {
+    // Hooks belong at component top level (4-space indent or less in this codebase)
+    const m = l.match(/^(\s*)(?:const|let)\s+\[[^\]]+\]\s*=\s*(?:React\.)?use(State|Reducer)\(/);
+    if (m && m[1].length > 4) { fail(f + ':' + (i+1) + ': hook called in nested scope (loop/callback/condition)'); nestedHooks++; }
+    if (/React\.use(State|Effect|Ref|Callback|Memo|Reducer)\(/.test(l) && /^\s{6,}/.test(l)) {
+      fail(f + ':' + (i+1) + ': React.useX call in nested scope'); nestedHooks++;
+    }
+  });
+});
+if (nestedHooks === 0) pass('No hooks called inside loops, callbacks or conditions');
+
+// 7.9 Safety net: error boundaries present so a crash never shows a blank page
+const ebPath = path.join(__dirname, 'src/components/ErrorBoundary.jsx');
+const indexSrc = fs.readFileSync(path.join(__dirname, 'src/index.js'), 'utf8');
+if (fs.existsSync(ebPath) && fs.readFileSync(ebPath,'utf8').includes('getDerivedStateFromError')) pass('ErrorBoundary component exists');
+else fail('ErrorBoundary component missing');
+if (appSrcForEB().includes('<ErrorBoundary') && indexSrc.includes('<ErrorBoundary')) pass('Screens and whole app wrapped in ErrorBoundary');
+else fail('ErrorBoundary not wired into App.js and index.js');
+function appSrcForEB() { return fs.readFileSync(path.join(__dirname, 'src/App.js'), 'utf8'); }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUITE 8 — Plan version and update system

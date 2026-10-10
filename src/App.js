@@ -4,6 +4,7 @@ import { useStorage } from './hooks/useStorage';
 import { PLAN_VERSION, PLAN_VERSION_NOTES } from './data/planData';
 
 import DevTestPanel from './components/DevTestPanel';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Screens
 import {
@@ -19,7 +20,7 @@ import {
 
 export default function App() {
   const storage = useStorage();
-  const { authState, data, saveStatus, signIn, toggleMigraineMode,
+  const { authState, data, saveStatus, signIn, reconnect, toggleMigraineMode,
           markOnboardingSeen, markVersionSeen, dismissBanner } = storage;
 
   const [activeTab, setActiveTab] = useState('home');
@@ -116,7 +117,7 @@ export default function App() {
           From Where You Are
         </span>
         <div style={{ display:'flex', alignItems:'center', gap:'var(--space-3)' }}>
-          <SaveIndicator status={saveStatus} />
+          <SaveIndicator status={saveStatus} onReconnect={reconnect} />
           <button
             className="btn-ghost"
             onClick={() => setShowHelp(true)}
@@ -153,7 +154,10 @@ export default function App() {
         marginTop: hasBanner ? 0 : 'var(--nav-height)',
         paddingBottom: 'calc(var(--bottom-nav-height) + var(--space-6))',
       }}>
-        {renderScreen()}
+        {/* key resets the safety net when switching tabs */}
+        <ErrorBoundary key={activeTab}>
+          {renderScreen()}
+        </ErrorBoundary>
       </main>
 
       {/* ── Bottom nav ── */}

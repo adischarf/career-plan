@@ -155,8 +155,24 @@ function RefIcon({ active }) {
 }
 
 // ─── SaveIndicator.jsx ────────────────────────────────────────────────────────
-export function SaveIndicator({ status }) {
+export function SaveIndicator({ status, onReconnect }) {
   if (status === 'idle') return null;
+  if (status === 'needs_reauth') {
+    return (
+      <button
+        className="btn-ghost"
+        onClick={onReconnect}
+        title="Your Google sign-in timed out. Click to reconnect — your changes will save."
+        style={{
+          fontSize: '0.75rem', fontFamily: 'var(--font-body)', fontWeight: 600,
+          color: 'var(--bougainvillea-dark)', padding: '4px 10px',
+          border: '1px solid var(--bougainvillea)', borderRadius: '99px',
+        }}
+      >
+        Reconnect to save
+      </button>
+    );
+  }
   return (
     <span style={{
       fontSize: '0.75rem', fontFamily: 'var(--font-body)',
