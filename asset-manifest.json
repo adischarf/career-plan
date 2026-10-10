@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/career-plan/static/css/main.3af8ea74.css",
+    "main.js": "/career-plan/static/js/main.b29fc963.js",
+    "index.html": "/career-plan/index.html",
+    "main.3af8ea74.css.map": "/career-plan/static/css/main.3af8ea74.css.map",
+    "main.b29fc963.js.map": "/career-plan/static/js/main.b29fc963.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3af8ea74.css",
+    "static/js/main.b29fc963.js"
+  ]
+}
